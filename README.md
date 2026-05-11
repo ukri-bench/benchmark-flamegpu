@@ -105,4 +105,4 @@ ADD: Example performance data
 
 ## License
 
-This benchmark description and associated files are released under the MIT license.
+This benchmark description and associated files are released under the GNU AGPLv3.
