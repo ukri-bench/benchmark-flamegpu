@@ -141,7 +141,11 @@ cd build
 
 This section contains example performance data from selected HPC systems.
 
-Todo: Example performance data
+> [!CAUTION]
+> - Todo: Example performance data
+
+> [!CAUTION]
+> Add caveats related to the performance data (timing captured internally excludes X/Y/Z)
 
 ## License
 
