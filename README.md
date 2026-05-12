@@ -130,7 +130,7 @@ Assuming `build` was used as the CMake build directory:
 
 ```bash
 cd build
-./bin/Release/todo
+./bin/Release/benchmark-flamegpu
 ```
 
 - Todo: Example of how to test correctness
