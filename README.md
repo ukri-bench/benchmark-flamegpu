@@ -87,13 +87,13 @@ Configure using `cmake`, with the appropriate compilers and CMake Configuration 
 For Nvidia GPUs (with Ampere GPUs as the example `CMAKE_CUDA_ARCHITECTURES`)
 
 ```bash
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTURES=80 -DFLAMEGPU_GPU=CUDA -DFLAMEGPU_SEATBELTs=OFF
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTURES=80 -DFLAMEGPU_GPU=CUDA -DFLAMEGPU_SEATBELTS=OFF
 ```
 
 For AMD GPUs (with Mi350x as the example `CMAKE_HIP_ARCHITECTURES`):
 
 ```bash
-CC=hipcc CXX=hipcc cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_HIP_ARCHITECTURES=gfx942 -DFLAMEGPU_GPU=HIP -DFLAMEGPU_SEATBELTs=OFF
+CC=hipcc CXX=hipcc cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_HIP_ARCHITECTURES=gfx942 -DFLAMEGPU_GPU=HIP -DFLAMEGPU_SEATBELTS=OFF
 ```
 
 Build the benchmark target(s) using CMake 
