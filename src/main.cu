@@ -80,7 +80,7 @@ nlohmann::json sweep_circles_spatial3d(Arguments args) {
     std::vector<CirclesSpatial3DRunData> benchmark_data = {};
     for (const float& targetVolume : TARGET_ENV_VOLUMES) {
         const float width = round(cbrt(targetVolume));
-        const float actualVolume = width * width * width;
+        // const float actualVolume = width * width * width;
         // const float badness = (actualVolume - targetVolume) / targetVolume;
         const std::uint32_t agent_count = static_cast<float>(ceil((width * width * width) * density));
         for (std::uint32_t rep = 0; rep < args.repetitions; rep++) {

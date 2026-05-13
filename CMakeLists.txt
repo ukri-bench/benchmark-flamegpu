@@ -58,9 +58,9 @@ target_link_libraries("${PROJECT_NAME}" PRIVATE CLI11::CLI11)
 target_link_libraries("${PROJECT_NAME}" PRIVATE nlohmann_json)
 
 # link against gpu toolkit specific libraries
-if(CMAKE_CUDA_COMPILER_LOADED)
+if(TARGET CUDA::nvml)
     target_link_libraries("${PROJECT_NAME}" PRIVATE CUDA::nvml)
 endif()
-if(CMAKE_HIP_COMPILER_LOADED)
-    target_link_libraries("${PROJECT_NAME}" PRIVATE rocm_smi::rocm_smi)  # might need to be amdsmi on some systems?
+if(TARGET rocm_smi64)
+    target_link_libraries("${PROJECT_NAME}" PRIVATE rocm_smi64)  # might need to be amdsmi on some systems?
 endif()
