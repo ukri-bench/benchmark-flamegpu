@@ -6,6 +6,10 @@
 # Visualisation screenshots
 *.png
 
+# virtual environments
+venv*
+.venv*
+
 # GoogleTest directories (handled by CMake)
 googletest-build/
 googletest-download/
@@ -62,7 +66,7 @@ build*/
 *.so
 *.dylib
 *.dll
-
+ve
 # Fortran module files
 *.mod
 
