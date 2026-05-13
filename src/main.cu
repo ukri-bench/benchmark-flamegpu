@@ -1,139 +1,151 @@
+#include <inttypes.h>
 #include <cfloat>
-#include "flamegpu/flamegpu.h"
+#include <cstdio>
+#include <iostream>
+#include <filesystem>
+#include <format>
+#include <fstream>
+#include <vector>
 
-FLAMEGPU_AGENT_FUNCTION(outputMessage, flamegpu::MessageNone, flamegpu::MessageSpatial3D) {
-    FLAMEGPU->message_out.setVariable<flamegpu::id_t>("id", FLAMEGPU->getID());
-    FLAMEGPU->message_out.setLocation(
-        FLAMEGPU->getVariable<float>("x"),
-        FLAMEGPU->getVariable<float>("y"),
-        FLAMEGPU->getVariable<float>("z"));
-    return flamegpu::ALIVE;
+#include <CLI/App.hpp>
+#include <CLI/Formatter.hpp>
+#include <CLI/Config.hpp>
+#include <nlohmann/json.hpp>
+
+#include "flamegpu/flamegpu.h"
+#include "./metadata.h"
+#include "./circles_spatial3D.h"
+
+
+// Include/use some FLAME GPU internal objects/methods for convenience. These are not considered part of the public API so may breaking changes may occur without a major version increase
+#include "flamegpu/detail/gpu/device_name.hpp"
+
+/**
+ * Struct containing values which can be configured using the CLI
+ */
+struct Arguments {
+    // The GPU index to use
+    std::int32_t device = 0;
+    // The number of times each simulation is repeated
+    std::uint32_t repetitions = 3u;
+    // The number of steps for each simulation
+    std::uint32_t steps = 200u;
+    // PRNG seed
+    std::uint64_t seed = 0u;
+    // If validation should be performed for this run?
+    bool validation = false;
+    // If a dry run should be performed
+    bool dry_run = false;
+    // The output path for performance data
+    std::filesystem::path output_path = std::filesystem::current_path() / "benchmark-flamegpu.json";
+};
+
+/**
+ * Define and parse the command line interface
+ */
+Arguments parse_cli(int argc, const char ** argv) {
+    // Struct containing values to be returned
+    Arguments args = {};
+    // Define the CLI using CLI11
+    CLI::App app{"ukri-bench/benchmark-flamegpu"};
+    app.add_option("-d,--device", args.device, "GPU Device ID (0 indexed)")->capture_default_str();
+    app.add_option("-r,--repetitions", args.repetitions, "The number of times to repeat each simulation")->capture_default_str();
+    app.add_option("-s,--steps", args.steps, "The number of steps for each simulation (> 0)")->check(CLI::PositiveNumber)->capture_default_str();
+    app.add_option("--seed", args.seed, "RNG Seed used for simulations")->capture_default_str();  // todo: should this be a seed for the bench, but a different seed per simulation?
+    app.add_flag("--validation", args.validation, "Enable validation checks");
+    app.add_flag("--dry-run", args.dry_run, "Perform a dry-run");
+    app.add_option("-o,--output", args.output_path, "Path to the output file")->capture_default_str();
+
+    // Parse the cli
+    try {
+        app.parse(argc, argv);
+    } catch (const CLI::ParseError &e) {
+        std::exit(app.exit(e));
+    }
+    // Return the struct containing CLI args
+    return args;
 }
 
-FLAMEGPU_AGENT_FUNCTION(move, flamegpu::MessageSpatial3D, flamegpu::MessageNone) {
-    const flamegpu::id_t ID = FLAMEGPU->getID();
-    const float REPULSE_FACTOR = FLAMEGPU->environment.getProperty<float>("repulse");
-    const float RADIUS = FLAMEGPU->message_in.radius();
-    float fx = 0.0;
-    float fy = 0.0;
-    float fz = 0.0;
-    const float x1 = FLAMEGPU->getVariable<float>("x");
-    const float y1 = FLAMEGPU->getVariable<float>("y");
-    const float z1 = FLAMEGPU->getVariable<float>("z");
-    int count = 0;
-    for (const auto &message : FLAMEGPU->message_in(x1, y1, z1)) {
-        if (message.getVariable<flamegpu::id_t>("id") != ID) {
-            const float x2 = message.getVariable<float>("x");
-            const float y2 = message.getVariable<float>("y");
-            const float z2 = message.getVariable<float>("z");
-            float x21 = x2 - x1;
-            float y21 = y2 - y1;
-            float z21 = z2 - z1;
-            const float separation = sqrtf(x21*x21 + y21*y21 + z21*z21);
-            if (separation < RADIUS && separation > 0.0f) {
-                float k = sinf((separation / RADIUS)*3.141f*-2)*REPULSE_FACTOR;
-                // Normalise without recalculating separation
-                x21 /= separation;
-                y21 /= separation;
-                z21 /= separation;
-                fx += k * x21;
-                fy += k * y21;
-                fz += k * z21;
-                count++;
+
+nlohmann::json sweep_circles_spatial3d(Arguments args) {
+    nlohmann::json data;
+
+    // const std::vector<float> TARGET_ENV_VOLUMES = {10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000};
+    const std::vector<float> TARGET_ENV_VOLUMES = {1000, 125000, 1000000};
+
+    // Fixed comm radius and (target) agent density
+    const float comm_radius = 2.f;
+    const float density = 1.f;
+
+    std::vector<CirclesSpatial3DRunData> benchmark_data = {};
+    for (const float& targetVolume : TARGET_ENV_VOLUMES) {
+        const float width = round(cbrt(targetVolume));
+        const float actualVolume = width * width * width;
+        // const float badness = (actualVolume - targetVolume) / targetVolume;
+        const std::uint32_t agent_count = static_cast<float>(ceil((width * width * width) * density));
+        for (std::uint32_t rep = 0; rep < args.repetitions; rep++) {
+            printf("%s\n", std::format("run_circles_spatial3D({}, {}, {}, {}, {}, {}, {})", args.device, args.seed, args.steps, agent_count, width, comm_radius, args.validation).c_str());
+            if (!args.dry_run) {
+                CirclesSpatial3DRunData run_data = run_circles_spatial3D(args.device, args.seed, args.steps, agent_count, width, comm_radius, args.validation);
+                benchmark_data.push_back(run_data);
             }
         }
     }
-    fx /= count > 0 ? count : 1;
-    fy /= count > 0 ? count : 1;
-    fz /= count > 0 ? count : 1;
-    FLAMEGPU->setVariable<float>("x", x1 + fx);
-    FLAMEGPU->setVariable<float>("y", y1 + fy);
-    FLAMEGPU->setVariable<float>("z", z1 + fz);
-    FLAMEGPU->setVariable<float>("drift", sqrtf(fx*fx + fy*fy + fz*fz));
-    return flamegpu::ALIVE;
+
+    for (const auto& run_data : benchmark_data) {
+        data.push_back(run_data);
+    }
+    return data;
 }
 
-FLAMEGPU_STEP_FUNCTION(Validation) {
-    static float prevTotalDrift = FLT_MAX;
-    static unsigned int driftDropped = 0;
-    static unsigned int driftIncreased = 0;
-    // This value should decline? as the model moves towards a steady equlibrium state
-    // Once an equilibrium state is reached, it is likely to oscillate between 2-4? values
-    float totalDrift = FLAMEGPU->agent("Circle").sum<float>("drift");
-    if (totalDrift <= prevTotalDrift)
-        driftDropped++;
-    else
-        driftIncreased++;
-    prevTotalDrift = totalDrift;
-    // printf("Avg Drift: %g\n", totalDrift / FLAMEGPU->agent("Circle").count());
-    printf("%.2f%% Drift correct\n", 100 * driftDropped / static_cast<float>(driftDropped + driftIncreased));
-}
 
 int main(int argc, const char ** argv) {
-    flamegpu::ModelDescription model("template");
+    // Setup/process CLI
+    Arguments args = parse_cli(argc, argv);
 
-    const unsigned int AGENT_COUNT = 16384;
-    const float ENV_MAX = static_cast<float>(floor(cbrt(AGENT_COUNT)));
-    const float RADIUS = 2.0f;
+    // Define a root json object
+    nlohmann::json json_root;
 
-    // global environment variables
-    flamegpu::EnvironmentDescription env = model.Environment();
-    env.newProperty("repulse", 0.05f);
+    // Add some metadata for this invocation of the benchmark to the json object
+    json_root["metadata"] = {
+        {"device_idx", args.device},
+        {"device_name", flamegpu::detail::gpu::getDeviceName(args.device)},
+        {"gpu_toolkit", metadata::gpu_toolkit_identifier()},
+        {"gpu_driver", metadata::gpu_driver_identifier()},
+        // Todo: add git_hash via a cmake generated file (to avoid full recomp on new commits, just a relink?)
+        // Todo: Add some CMake configuration options to further identify the build (i.e. FLAMEGPU_SEATBELTS)
+    };
 
-    // Location message
-    flamegpu::MessageSpatial3D::Description message = model.newMessage<flamegpu::MessageSpatial3D>("location");
-    message.newVariable<flamegpu::id_t>("id");
-    message.setRadius(RADIUS);
-    message.setMin(0, 0, 0);
-    message.setMax(ENV_MAX, ENV_MAX, ENV_MAX);
-    
-    // Circle agent
-    flamegpu::AgentDescription  agent = model.newAgent("Circle");
-    agent.newVariable<float>("x");
-    agent.newVariable<float>("y");
-    agent.newVariable<float>("z");
-    agent.newVariable<float>("drift");  // Store the distance moved here, for validation
-    
-    // Define each function. 
-    flamegpu::AgentFunctionDescription outputMessageDescription = agent.newFunction("outputMessage", outputMessage);
-    outputMessageDescription.setMessageOutput("location");
-    flamegpu::AgentFunctionDescription moveDescription = agent.newFunction("move", move);
-    moveDescription.setMessageInput("location");
-    // Add a dependency that move requires outputMessage to have executed
-    moveDescription.dependsOn(outputMessageDescription);
 
-    // Identify the root of execution
-    model.addExecutionRoot(outputMessageDescription);
-    
-    // Add a step function which in this case is used as a crude form of validation
-    model.addStepFunction(Validation);
+    // Run the benchmark(s)
 
-    // Build the execution graph
-    model.generateLayers();
+    // Sweep over the spatial 3d model with a range of target volumes with a fixed agent density and communication radius
+    auto circles_data = sweep_circles_spatial3d(args);
+    json_root["benchmarks"]["circles_spatial3D"] = circles_data;
 
-    // Create the simulation
-    flamegpu::CUDASimulation simulation(model, argc, argv);
+    // Output the json data to stdout and (potentially) disk
+    printf("benchmark-flamegpu.json:\n%s\n", json_root.dump(2).c_str());
 
-    // initialise a population of agents if not provided on disk
-    if (simulation.getSimulationConfig().input_file.empty()) {
-        // Currently population has not been init, so generate an agent population on the fly
-        std::mt19937_64 rng;
-        std::uniform_real_distribution<float> dist(0.0f, ENV_MAX);
-        flamegpu::AgentVector population(model.Agent("Circle"), AGENT_COUNT);
-        for (unsigned int i = 0; i < AGENT_COUNT; i++) {
-            flamegpu::AgentVector::Agent instance = population[i];
-            instance.setVariable<float>("x", dist(rng));
-            instance.setVariable<float>("y", dist(rng));
-            instance.setVariable<float>("z", dist(rng));
+    // write to disk at the specified location (or in a default file in the working directory?)
+    if (!args.dry_run) {
+        // Create the directory to write into (in case it does not exist)
+        if (args.output_path.has_parent_path()) {
+            std::filesystem::create_directories(args.output_path.parent_path());
         }
-        simulation.setPopulationData(population);
+        // Write out the file to disk, overwriting if the file already exists
+        // Todo: add a --force flag?
+        std::ofstream file(args.output_path);
+        if (file.is_open()) {
+            file << json_root.dump(4);
+            fprintf(stderr, "%s\n", std::format("JSON written to '{}'", args.output_path.string()).c_str());
+        } else {
+            fprintf(stderr, "%s\n", std::format("Error: Failed to open '{}' for writing", args.output_path.string()).c_str());
+        }
     }
 
-    // Execute the simulation
-    simulation.simulate();
-
-    // Ensure profiling / memcheck work correctly
+    // Cleanup / Ensure profiling / memcheck work correctly
     flamegpu::util::cleanup();
 
-    return EXIT_SUCCESS;
+    // Return
+    return EXIT_SUCCESS;  // todo: exit code based on validation result?
 }
