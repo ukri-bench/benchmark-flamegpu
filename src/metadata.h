@@ -1,5 +1,8 @@
 #pragma once
 
+#include <filesystem>
+#include <fstream>
+#include <iostream>
 #include <string>
 
 #if defined(FLAMEGPU_USE_HIP)
@@ -67,5 +70,29 @@ std::string gpu_driver_identifier() {
  * Get the reuslt of git describe --always --dirty exeduted during CMake configuration cmake configuration, included in the dynamically generated metadata_dynamic.cpp in the build directory.
  */
 std::string get_git_describe();
+
+
+/**
+ * Get the cpu model from /proc/cpuinfo if possible
+ */
+std::string get_cpu_model() {
+    const std::filesystem::path cpuinfoPath = "/proc/cpuinfo";
+    if (std::filesystem::exists(cpuinfoPath)) {
+        std::ifstream cpuinfo(cpuinfoPath);
+        if (cpuinfo.is_open()) {
+            std::string line;
+            while (std::getline(cpuinfo, line)) {
+                if (line.rfind("model name", 0) == 0) {
+                    size_t delimIdx = line.find(':');
+                    if (delimIdx != std::string::npos) {
+                        return line.substr(delimIdx + 2);
+                    }
+                }
+            }
+        }
+    }
+    // If the value has not been returned yet, default to unknown
+    return "UNKNOWN";
+}
 
 }  // namespace metadata

@@ -117,8 +117,9 @@ int main(int argc, const char ** argv) {
 
     json_root["metadata"]["runtime"] = {
         {"gpu_driver", metadata::gpu_driver_identifier()},
-        {"device_idx", args.device},
-        {"device_name", flamegpu::detail::gpu::getDeviceName(args.device)},
+        {"gpu_idx", args.device},
+        {"gpu_name", flamegpu::detail::gpu::getDeviceName(args.device)},
+        {"cpu_model_name", metadata::get_cpu_model()},
     };
     // Run the benchmark(s)
 
