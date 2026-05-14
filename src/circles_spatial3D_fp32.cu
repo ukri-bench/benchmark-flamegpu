@@ -2,7 +2,7 @@
 #include <cstdio>
 #include <cfloat>
 #include <vector>
-#include "circles_spatial3D.h"
+#include "circles_spatial3D_fp32.h"
 #include "flamegpu/flamegpu.h"
 
 // Include/use some FLAME GPU internal objects/methods for convenience. These are not considered part of the public API so may breaking changes may occur without a major version increase
@@ -113,7 +113,7 @@ FLAMEGPU_INIT_FUNCTION(generate_population) {
 }  // namespace
 
 // Run an individual simulation, using
-const CirclesSpatial3DRunData run_circles_spatial3D(
+const CirclesSpatial3DRunData run_circles_spatial3D_fp32(
     const std::int32_t DEVICE,
     const std::uint64_t SEED,
     const std::uint32_t STEPS,

@@ -34,11 +34,11 @@ struct CirclesSpatial3DRunData {
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(CirclesSpatial3DRunData, device, seed, steps, agent_count, env_width, comm_radius, validation, agent_updates, validation_result, s_total, s_rtc, s_simulation, s_init, s_steps, s_exit, agent_updates_per_s_total);
 
 /**
- * Run a single invocation of the circles benchmark model using spatial 3D data.
+ * Run a single invocation of the circles spatial 3D fp32 benchmark model
  * 
  * Returns a struct containing benchmark data (required configuration information + performance data for this simulation)
  */
-const CirclesSpatial3DRunData run_circles_spatial3D(
+const CirclesSpatial3DRunData run_circles_spatial3D_fp32(
     const std::int32_t DEVICE,
     const std::uint64_t SEED,
     const std::uint32_t STEPS,

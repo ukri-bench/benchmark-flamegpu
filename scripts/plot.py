@@ -38,10 +38,10 @@ def json_to_df(f: os.PathLike) -> pd.DataFrame:
         raise RuntimeError(f"Required key 'benchmarks' not found in '{path}'")
     
     # Todo: make this more flexible once other benchmarks are added
-    if "circles_spatial3D" not in data["benchmarks"]:
-        raise RuntimeError(f"Required key 'circles_spatial3D' not found in '{path}'")
+    if "circles_spatial3D_fp32" not in data["benchmarks"]:
+        raise RuntimeError(f"Required key 'circles_spatial3D_fp32' not found in '{path}'")
 
-    df = pd.DataFrame(data["benchmarks"]["circles_spatial3D"])
+    df = pd.DataFrame(data["benchmarks"]["circles_spatial3D_fp32"])
     for key, value in data["metadata"]["build"].items():
         df[key] = value
     for key, value in data["metadata"]["runtime"].items():
