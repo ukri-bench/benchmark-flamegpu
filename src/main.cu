@@ -30,7 +30,7 @@ struct Arguments {
     // The number of times each simulation is repeated
     std::uint32_t repetitions = 3u;
     // The number of steps for each simulation
-    std::uint32_t steps = 200u;
+    std::uint32_t steps = 1000u;
     // PRNG seed
     std::uint64_t seed = 0u;
     // If validation should be performed for this run?
@@ -71,8 +71,8 @@ Arguments parse_cli(int argc, const char ** argv) {
 nlohmann::json sweep_circles_spatial3d(Arguments args) {
     nlohmann::json data;
 
-    // const std::vector<float> TARGET_ENV_VOLUMES = {10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000};
-    const std::vector<float> TARGET_ENV_VOLUMES = {1000, 125000, 1000000};
+    const std::vector<float> TARGET_ENV_VOLUMES = {10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000};
+    // const std::vector<float> TARGET_ENV_VOLUMES = {1000, 125000, 1000000};
 
     // Fixed comm radius and (target) agent density
     const float comm_radius = 2.f;
