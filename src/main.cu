@@ -88,7 +88,7 @@ nlohmann::json sweep_circles_spatial3d_fp32(Arguments args) {
         for (std::uint32_t rep = 0; rep < args.repetitions; rep++) {
             printf("%s\n", std::format("run_circles_spatial3D_fp32({}, {}, {}, {}, {}, {}, {})", args.device, args.seed, args.steps, agent_count, width, comm_radius, args.validation).c_str());
             if (!args.dry_run) {
-                CirclesSpatial3DRunData run_data = run_circles_spatial3D_fp32(args.device, args.seed, args.steps, agent_count, width, comm_radius, args.validation);
+                CirclesSpatial3DRunData run_data = run_circles_spatial3D_fp32(args.device, args.seed + rep, args.steps, agent_count, width, comm_radius, args.validation);
                 benchmark_data.push_back(run_data);
             }
         }
