@@ -65,7 +65,6 @@ if(Git_FOUND)
     if (GIT_DESCRIBE_RESULT EQUAL 0)
         set(BENCHMARK_FLAMEGPU_GIT_DESCRIBE "${GIT_DESCRIBE_OUTPUT}")
     endif()
-    message(BENCHMARK_FLAMEGPU_GIT_DESCRIBE ${BENCHMARK_FLAMEGPU_GIT_DESCRIBE})
 endif()
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/dynamic_metadata.cpp.in ${CMAKE_CURRENT_BINARY_DIR}/src/dynamic_metadata.cpp @ONLY)
 
