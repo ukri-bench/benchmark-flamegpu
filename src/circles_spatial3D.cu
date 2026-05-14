@@ -209,7 +209,7 @@ const CirclesSpatial3DRunData run_circles_spatial3D(
     outputs.s_simulation = simulation.getElapsedTimeSimulation();
     outputs.s_init = simulation.getElapsedTimeInitFunctions();
     std::vector<double> s_steps = simulation.getElapsedTimeSteps();
-    outputs.s_steps = std::accumulate(s_steps.begin(), s_steps.end(), 0.f) / (double)simulation.getStepCounter();
+    outputs.s_steps = std::accumulate(s_steps.begin(), s_steps.end(), 0.);
     outputs.s_exit = simulation.getElapsedTimeExitFunctions();
 
     // Compute and store the figure of merit (agent updates per second)
