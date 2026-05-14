@@ -39,10 +39,31 @@ endif()
 # Define output location of binary files (matching visual studio structure for consistency)
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}/)
 
+# Dynamically generate a .cpp file which includes the git hash of this repository
+set(BENCHMARK_FLAMEGPU_GIT_DESCRIBE "UNKNOWN")
+find_package(Git)
+if(Git_FOUND)
+    execute_process(
+        COMMAND
+            ${GIT_EXECUTABLE} describe --always --dirty
+        WORKING_DIRECTORY
+            ${CMAKE_CURRENT_SOURCE_DIR}
+        RESULT_VARIABLE
+            GIT_DESCRIBE_RESULT
+        OUTPUT_VARIABLE
+            GIT_DESCRIBE_OUTPUT
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+    if (GIT_DESCRIBE_RESULT EQUAL 0)
+        set(BENCHMARK_FLAMEGPU_GIT_DESCRIBE "${GIT_DESCRIBE_OUTPUT}")
+    endif()
+endif()
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/dynamic_metadata.cpp.in ${CMAKE_CURRENT_BINARY_DIR}/src/dynamic_metadata.cpp @ONLY)
+
 # List source files for the benchmark model
 SET(ALL_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cu
     ${CMAKE_CURRENT_SOURCE_DIR}/src/metadata.h
+    ${CMAKE_CURRENT_BINARY_DIR}/src/dynamic_metadata.cpp # dynamicly generated
     ${CMAKE_CURRENT_SOURCE_DIR}/src/circles_spatial3D.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/circles_spatial3D.cu
 )
@@ -52,6 +73,9 @@ flamegpu_add_executable("${PROJECT_NAME}" "${ALL_SRC}" "${FLAMEGPU_ROOT}" "${PRO
 
 # ensure include directories are updated
 target_include_directories("${PROJECT_NAME}" PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
+
+# Forward the build configuration as a macro so it can be included in metadata output
+target_compile_definitions("${PROJECT_NAME}" PRIVATE BUILD_TYPE="$<CONFIG>")
 
 # link against additional dependencies
 target_link_libraries("${PROJECT_NAME}" PRIVATE CLI11::CLI11)

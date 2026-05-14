@@ -63,4 +63,9 @@ std::string gpu_driver_identifier() {
 #endif
 }
 
+/**
+ * Get the reuslt of git describe --always --dirty exeduted during CMake configuration cmake configuration, included in the dynamically generated metadata_dynamic.cpp in the build directory.
+ */
+std::string get_git_describe();
+
 }  // namespace metadata

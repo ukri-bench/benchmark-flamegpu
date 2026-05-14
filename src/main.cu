@@ -98,7 +98,6 @@ nlohmann::json sweep_circles_spatial3d(Arguments args) {
     return data;
 }
 
-
 int main(int argc, const char ** argv) {
     // Setup/process CLI
     Arguments args = parse_cli(argc, argv);
@@ -112,10 +111,11 @@ int main(int argc, const char ** argv) {
         {"device_name", flamegpu::detail::gpu::getDeviceName(args.device)},
         {"gpu_toolkit", metadata::gpu_toolkit_identifier()},
         {"gpu_driver", metadata::gpu_driver_identifier()},
-        // Todo: add git_hash via a cmake generated file (to avoid full recomp on new commits, just a relink?)
-        // Todo: Add some CMake configuration options to further identify the build (i.e. FLAMEGPU_SEATBELTS)
+        {"BUILD_TYPE", BUILD_TYPE},
+        {"FLAMEGPU_SEATBELTS", FLAMEGPU_SEATBELTS},
+        {"FLAMEGPU_VERISON", std::string(flamegpu::VERSION_FULL)},
+        {"git_describe", metadata::get_git_describe()},
     };
-
 
     // Run the benchmark(s)
 
