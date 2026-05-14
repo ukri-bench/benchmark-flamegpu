@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <format>
 #include <fstream>
+#include <string>
 #include <vector>
 
 #include <CLI/App.hpp>
@@ -106,17 +107,19 @@ int main(int argc, const char ** argv) {
     nlohmann::json json_root;
 
     // Add some metadata for this invocation of the benchmark to the json object
-    json_root["metadata"] = {
-        {"device_idx", args.device},
-        {"device_name", flamegpu::detail::gpu::getDeviceName(args.device)},
+    json_root["metadata"]["build"] = {
         {"gpu_toolkit", metadata::gpu_toolkit_identifier()},
-        {"gpu_driver", metadata::gpu_driver_identifier()},
         {"BUILD_TYPE", BUILD_TYPE},
         {"FLAMEGPU_SEATBELTS", FLAMEGPU_SEATBELTS},
         {"FLAMEGPU_VERISON", std::string(flamegpu::VERSION_FULL)},
         {"git_describe", metadata::get_git_describe()},
     };
 
+    json_root["metadata"]["runtime"] = {
+        {"gpu_driver", metadata::gpu_driver_identifier()},
+        {"device_idx", args.device},
+        {"device_name", flamegpu::detail::gpu::getDeviceName(args.device)},
+    };
     // Run the benchmark(s)
 
     // Sweep over the spatial 3d model with a range of target volumes with a fixed agent density and communication radius
