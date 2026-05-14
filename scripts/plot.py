@@ -28,6 +28,12 @@ def json_to_df(f: os.PathLike) -> pd.DataFrame:
     if "metadata" not in data:
         raise RuntimeError(f"Required key 'metadata' not found in '{path}'")
 
+    if "build" not in data["metadata"]:
+        raise RuntimeError(f"Required key 'metadata' not found in '{path}'")
+
+    if "runtime" not in data["metadata"]:
+        raise RuntimeError(f"Required key 'metadata' not found in '{path}'")
+
     if "benchmarks" not in data:
         raise RuntimeError(f"Required key 'benchmarks' not found in '{path}'")
     
@@ -36,7 +42,9 @@ def json_to_df(f: os.PathLike) -> pd.DataFrame:
         raise RuntimeError(f"Required key 'circles_spatial3D' not found in '{path}'")
 
     df = pd.DataFrame(data["benchmarks"]["circles_spatial3D"])
-    for key, value in data["metadata"].items():
+    for key, value in data["metadata"]["build"].items():
+        df[key] = value
+    for key, value in data["metadata"]["runtime"].items():
         df[key] = value
     return df
 
@@ -63,7 +71,7 @@ def plot(df: pd.DataFrame, output_path: pathlib.Path | None, show: bool) -> bool
         data = df,
         x="agent_count",
         y="agent_updates_per_s_total",
-        hue="device_name",
+        hue="gpu_name",
         style="gpu_toolkit",
         # marker="x", # todo multiple markers
     )
