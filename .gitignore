@@ -3,8 +3,9 @@
 *.json
 *.bin
 
-# Visualisation screenshots
+# Images
 *.png
+*.svg
 
 # virtual environments
 venv*
