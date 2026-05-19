@@ -1,4 +1,4 @@
-#! /usr/bin/env bash
+#! /usr/bin/env python3
 """Combine and plot benchmark-flamegpu data from multiple json files"""
 
 import argparse
@@ -14,6 +14,7 @@ def cli() -> argparse.Namespace:
     parser.add_argument("json_paths", type=pathlib.Path, nargs="+", help="Paths to JSON files containing benchmark-flamegpu data")
     parser.add_argument("-o", "--output", type=pathlib.Path, help="Path to a directory for output files")
     parser.add_argument("--show", action="store_true", help="Sequentially display each plot interactively")
+    parser.add_argument("--format", choices=["png", "svg"], default="png", help="The output format for figures written to disk (default png)")
     args = parser.parse_args()
     return args
 
@@ -38,14 +39,23 @@ def json_to_df(f: os.PathLike) -> pd.DataFrame:
         raise RuntimeError(f"Required key 'benchmarks' not found in '{path}'")
     
     # Todo: make this more flexible once other benchmarks are added
-    if "circles_spatial3D_fp32" not in data["benchmarks"]:
-        raise RuntimeError(f"Required key 'circles_spatial3D_fp32' not found in '{path}'")
+    if not data["benchmarks"]:
+        raise RuntimeError(f"'benchmarks' in '{path}' has no members / data")
 
-    df = pd.DataFrame(data["benchmarks"]["circles_spatial3D_fp32"])
-    for key, value in data["metadata"]["build"].items():
-        df[key] = value
-    for key, value in data["metadata"]["runtime"].items():
-        df[key] = value
+    # flatten each benchmark into a dataframe
+    df_list = []
+    for name, benchmark_data in data["benchmarks"].items():
+        temp_df = pd.DataFrame(benchmark_data)
+        temp_df["benchmark_name"] = name
+        df_list.append(temp_df)
+
+    # combine the benchmark dataframes 
+    df = pd.concat(df_list, ignore_index=True)
+
+    # embed metadata in each row
+    metadata = {**data["metadata"]["build"], **data["metadata"]["runtime"]}
+    df = df.assign(**metadata)
+
     return df
 
 def load_data(json_paths: list[os.PathLike]) -> dict[pathlib.Path, pd.DataFrame]:
@@ -56,37 +66,50 @@ def load_data(json_paths: list[os.PathLike]) -> dict[pathlib.Path, pd.DataFrame]
             dfs.append(df)
     return pd.concat(dfs, ignore_index=True) if dfs else pd.DataFrame()
 
-def plot(df: pd.DataFrame, output_path: pathlib.Path | None, show: bool) -> bool:
+def plot(df: pd.DataFrame, output_path: pathlib.Path | None,  output_format: str, show: bool) -> bool:
     if df.empty:
         print("No data to plot")
         return False
+
+    # Combine the gpu_name and gpu_toolkit into a single field to use as 
+    df = df.copy()
+    df["GPU / Toolkit"] = df["gpu_name"] + " - " + df["gpu_toolkit"]
+    
+    # Rename the benchmark_name column just for rendering purposes
+    df = df.rename(columns={
+        "benchmark_name": "Benchmark Model",
+    })
 
     # Plot the agent count against agent updates per second, comparing different devices and gpu toolkits
     # Todo: make this produce multiple plots, with more factor determining the different builds to compare
     sns.set_style(style="darkgrid")
     sns.set_palette("Dark2")
 
-    plt.figure(figsize=(16, 9))
+    plt.figure(figsize=(16, 9), layout="constrained")
     plot = sns.lineplot(
         data = df,
         x="agent_count",
         y="agent_updates_per_s_total",
-        hue="gpu_name",
-        style="gpu_toolkit",
-        # marker="x", # todo multiple markers
+        hue="GPU / Toolkit",
+        style="Benchmark Model",
+        markers=True,
+        errorbar=("pi", 100), # show full range with the error bars
+        estimator="median", # plot the median, to avoid errors when the first run is an outlier breaking seaborn bars
+        err_style="bars",
     )
-    plt.title("ukri-bench/benchmark-flamegpu: circles-spatial3D")
+    plt.title("ukri-bench/benchmark-flamegpu: Throughput against Agent Count per GPU/Toolkit per Benchmark Model")
     plt.xlabel("Agent Count")
-    plt.ylabel("Agent Updates per Second (including model definition)")
+    plt.ylabel("Agent Updates per Second")
     plt.xlim(left=0)
     plt.ylim(bottom=0)
+    plt.legend(bbox_to_anchor=(1.02, 1), loc="upper left")
 
 
     if output_path:
         output_path.mkdir(parents=True, exist_ok=True)
         # todo: multiple files etc
-        output_file = output_path / "benchmark-flamegpu.png"
-        plt.savefig(output_file)
+        output_file = output_path / f"benchmark-flamegpu.{output_format}"
+        plt.savefig(output_file, dpi=300)
         print(f"Figure saved to '{output_file}'")
 
     if show:
@@ -98,7 +121,7 @@ def main():
     args = cli()
     dataframes = load_data(args.json_paths)
     # Todo: Preprocess multiple values for repetitions? and produce numeric outputs not just plots? (maybe a diff script)
-    success = plot(dataframes, args.output, args.show)
+    success = plot(dataframes, args.output, args.format, args.show)
     return success
 
 if __name__ == "__main__":
