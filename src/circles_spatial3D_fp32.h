@@ -7,7 +7,7 @@
 /**
  * Structure containing information about a single simulation run
  */
-struct CirclesSpatial3DRunData {
+struct CirclesSpatial3DFP32RunData {
     // inputs
     std::int32_t device = 0;
     std::uint64_t seed = 0u;
@@ -31,14 +31,14 @@ struct CirclesSpatial3DRunData {
     double agent_updates_per_s_total = 0.f;
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(CirclesSpatial3DRunData, device, seed, steps, agent_count, env_width, comm_radius, validation, agent_updates, validation_result, s_total, s_rtc, s_simulation, s_init, s_steps, s_exit, agent_updates_per_s_total);
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(CirclesSpatial3DFP32RunData, device, seed, steps, agent_count, env_width, comm_radius, validation, agent_updates, validation_result, s_total, s_rtc, s_simulation, s_init, s_steps, s_exit, agent_updates_per_s_total);
 
 /**
  * Run a single invocation of the circles spatial 3D fp32 benchmark model
  * 
  * Returns a struct containing benchmark data (required configuration information + performance data for this simulation)
  */
-const CirclesSpatial3DRunData run_circles_spatial3D_fp32(
+const CirclesSpatial3DFP32RunData run_circles_spatial3D_fp32(
     const std::int32_t DEVICE,
     const std::uint64_t SEED,
     const std::uint32_t STEPS,
