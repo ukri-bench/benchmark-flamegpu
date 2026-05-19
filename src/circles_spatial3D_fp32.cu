@@ -113,7 +113,7 @@ FLAMEGPU_INIT_FUNCTION(generate_population) {
 }  // namespace
 
 // Run an individual simulation, using
-const CirclesSpatial3DRunData run_circles_spatial3D_fp32(
+const CirclesSpatial3DFP32RunData run_circles_spatial3D_fp32(
     const std::int32_t DEVICE,
     const std::uint64_t SEED,
     const std::uint32_t STEPS,
@@ -142,7 +142,6 @@ const CirclesSpatial3DRunData run_circles_spatial3D_fp32(
         agent.newVariable<float>("x");
         agent.newVariable<float>("y");
         agent.newVariable<float>("z");
-        agent.newVariable<float>("totalMessageCount", 0.f);
 
         // if(validation) { // todo: runtime conditional via templating?
             agent.newVariable<float>("drift");  // Store the distance moved here, for validation
@@ -193,7 +192,7 @@ const CirclesSpatial3DRunData run_circles_spatial3D_fp32(
     timer.stop();
 
     // Build the output data structure containing information about this simulation
-    CirclesSpatial3DRunData outputs;
+    CirclesSpatial3DFP32RunData outputs;
     outputs.device = DEVICE;
     outputs.seed = SEED;
     outputs.steps = STEPS;
