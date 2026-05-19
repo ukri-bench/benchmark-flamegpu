@@ -75,6 +75,8 @@ SET(ALL_SRC
     ${CMAKE_CURRENT_BINARY_DIR}/src/dynamic_metadata.cpp # dynamicly generated
     ${CMAKE_CURRENT_SOURCE_DIR}/src/circles_spatial3D_fp32.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/circles_spatial3D_fp32.cu
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/circles_spatial3D_fp64.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/circles_spatial3D_fp64.cu
 )
 
 # Define the binary target
