@@ -14,6 +14,7 @@ def cli() -> argparse.Namespace:
     parser.add_argument("json_paths", type=pathlib.Path, nargs="+", help="Paths to JSON files containing benchmark-flamegpu data")
     parser.add_argument("-o", "--output", type=pathlib.Path, help="Path to a directory for output files")
     parser.add_argument("--show", action="store_true", help="Sequentially display each plot interactively")
+    parser.add_argument("--format", choices=["png", "svg"], default="png", help="The output format for figures written to disk (default png)")
     args = parser.parse_args()
     return args
 
@@ -65,7 +66,7 @@ def load_data(json_paths: list[os.PathLike]) -> dict[pathlib.Path, pd.DataFrame]
             dfs.append(df)
     return pd.concat(dfs, ignore_index=True) if dfs else pd.DataFrame()
 
-def plot(df: pd.DataFrame, output_path: pathlib.Path | None, show: bool) -> bool:
+def plot(df: pd.DataFrame, output_path: pathlib.Path | None,  output_format: str, show: bool) -> bool:
     if df.empty:
         print("No data to plot")
         return False
@@ -92,6 +93,8 @@ def plot(df: pd.DataFrame, output_path: pathlib.Path | None, show: bool) -> bool
         hue="GPU / Toolkit",
         style="Benchmark Model",
         markers=True,
+        errorbar=("pi", 100), # show full range with the error bars
+        err_style="bars",
     )
     plt.title("ukri-bench/benchmark-flamegpu: Througput against Agent Count per GPU/Toolkit per Benchmark Model")
     plt.xlabel("Agent Count")
@@ -104,8 +107,8 @@ def plot(df: pd.DataFrame, output_path: pathlib.Path | None, show: bool) -> bool
     if output_path:
         output_path.mkdir(parents=True, exist_ok=True)
         # todo: multiple files etc
-        output_file = output_path / "benchmark-flamegpu.png"
-        plt.savefig(output_file)
+        output_file = output_path / f"benchmark-flamegpu.{output_format}"
+        plt.savefig(output_file, dpi=300)
         print(f"Figure saved to '{output_file}'")
 
     if show:
@@ -117,7 +120,7 @@ def main():
     args = cli()
     dataframes = load_data(args.json_paths)
     # Todo: Preprocess multiple values for repetitions? and produce numeric outputs not just plots? (maybe a diff script)
-    success = plot(dataframes, args.output, args.show)
+    success = plot(dataframes, args.output, args.format, args.show)
     return success
 
 if __name__ == "__main__":
