@@ -3,7 +3,6 @@
 #include <cstdio>
 #include <iostream>
 #include <filesystem>
-#include <format>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -87,7 +86,7 @@ nlohmann::json sweep_circles_spatial3d_fp32(Arguments args) {
         // const float badness = (actualVolume - targetVolume) / targetVolume;
         const std::uint32_t agent_count = static_cast<float>(ceil((width * width * width) * density));
         for (std::uint32_t rep = 0; rep < args.repetitions; rep++) {
-            printf("%s\n", std::format("run_circles_spatial3D_fp32({}, {}, {}, {}, {}, {}, {})", args.device, args.seed, args.steps, agent_count, width, comm_radius, args.validation).c_str());
+            printf("run_circles_spatial3D_fp32(%d, %" PRId64 ", %u, %u, %f, %f, %d)\n", args.device, args.seed, args.steps, agent_count, width, comm_radius, args.validation);
             if (!args.dry_run) {
                 CirclesSpatial3DFP32RunData run_data = run_circles_spatial3D_fp32(args.device, args.seed + rep, args.steps, agent_count, width, comm_radius, args.validation);
                 benchmark_data.push_back(run_data);
@@ -120,7 +119,7 @@ nlohmann::json sweep_circles_spatial3d_fp64(Arguments args) {
         // const double badness = (actualVolume - targetVolume) / targetVolume;
         const std::uint32_t agent_count = static_cast<float>(ceil((width * width * width) * density));
         for (std::uint32_t rep = 0; rep < args.repetitions; rep++) {
-            printf("%s\n", std::format("run_circles_spatial3D_fp64({}, {}, {}, {}, {}, {}, {})", args.device, args.seed, args.steps, agent_count, width, comm_radius, args.validation).c_str());
+            printf("run_circles_spatial3D_fp64(%d, %" PRId64 ", %u, %u, %f, %f, %d)\n", args.device, args.seed, args.steps, agent_count, width, comm_radius, args.validation);
             if (!args.dry_run) {
                 CirclesSpatial3DFP64RunData run_data = run_circles_spatial3D_fp64(args.device, args.seed + rep, args.steps, agent_count, width, comm_radius, args.validation);
                 benchmark_data.push_back(run_data);
@@ -178,9 +177,9 @@ int main(int argc, const char ** argv) {
         std::ofstream file(args.output_path);
         if (file.is_open()) {
             file << json_root.dump(4);
-            fprintf(stderr, "%s\n", std::format("JSON written to '{}'", args.output_path.string()).c_str());
+            fprintf(stderr, "JSON written to '%s'\n", args.output_path.c_str());
         } else {
-            fprintf(stderr, "%s\n", std::format("Error: Failed to open '{}' for writing", args.output_path.string()).c_str());
+            fprintf(stderr, "Error: Failed to open '%s' for writing\n", args.output_path.c_str());
         }
     }
 
