@@ -1,4 +1,4 @@
-#! /usr/bin/env bash
+#! /usr/bin/env python3
 """Combine and plot benchmark-flamegpu data from multiple json files"""
 
 import argparse
