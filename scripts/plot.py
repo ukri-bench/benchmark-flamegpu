@@ -91,7 +91,7 @@ def plot(df: pd.DataFrame, output_path: pathlib.Path | None, show: bool) -> bool
         y="agent_updates_per_s_total",
         hue="GPU / Toolkit",
         style="Benchmark Model",
-        marker=True,
+        markers=True,
     )
     plt.title("ukri-bench/benchmark-flamegpu: Througput against Agent Count per GPU/Toolkit per Benchmark Model")
     plt.xlabel("Agent Count")
