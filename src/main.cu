@@ -7,66 +7,16 @@
 #include <string>
 #include <vector>
 
-#include <CLI/App.hpp>
-#include <CLI/Formatter.hpp>
-#include <CLI/Config.hpp>
 #include <nlohmann/json.hpp>
 
 #include "flamegpu/flamegpu.h"
+#include "./cli.h"
 #include "./metadata.h"
 #include "./circles_spatial3D_fp32.h"
 #include "./circles_spatial3D_fp64.h"
 
-
 // Include/use some FLAME GPU internal objects/methods for convenience. These are not considered part of the public API so may breaking changes may occur without a major version increase
 #include "flamegpu/detail/gpu/device_name.hpp"
-
-/**
- * Struct containing values which can be configured using the CLI
- */
-struct Arguments {
-    // The GPU index to use
-    std::int32_t device = 0;
-    // The number of times each simulation is repeated
-    std::uint32_t repetitions = 3u;
-    // The number of steps for each simulation
-    std::uint32_t steps = 1000u;
-    // PRNG seed
-    std::uint64_t seed = 0u;
-    // If validation should be performed for this run?
-    bool validation = false;
-    // If a dry run should be performed
-    bool dry_run = false;
-    // The output path for performance data
-    std::filesystem::path output_path = std::filesystem::current_path() / "benchmark-flamegpu.json";
-};
-
-/**
- * Define and parse the command line interface
- */
-Arguments parse_cli(int argc, const char ** argv) {
-    // Struct containing values to be returned
-    Arguments args = {};
-    // Define the CLI using CLI11
-    CLI::App app{"ukri-bench/benchmark-flamegpu"};
-    app.add_option("-d,--device", args.device, "GPU Device ID (0 indexed)")->capture_default_str();
-    app.add_option("-r,--repetitions", args.repetitions, "The number of times to repeat each simulation")->capture_default_str();
-    app.add_option("-s,--steps", args.steps, "The number of steps for each simulation (> 0)")->check(CLI::PositiveNumber)->capture_default_str();
-    app.add_option("--seed", args.seed, "RNG Seed used for simulations")->capture_default_str();  // todo: should this be a seed for the bench, but a different seed per simulation?
-    app.add_flag("--validation", args.validation, "Enable validation checks");
-    app.add_flag("--dry-run", args.dry_run, "Perform a dry-run");
-    app.add_option("-o,--output", args.output_path, "Path to the output file")->capture_default_str();
-
-    // Parse the cli
-    try {
-        app.parse(argc, argv);
-    } catch (const CLI::ParseError &e) {
-        std::exit(app.exit(e));
-    }
-    // Return the struct containing CLI args
-    return args;
-}
-
 
 nlohmann::json sweep_circles_spatial3d_fp32(Arguments args) {
     nlohmann::json data;
