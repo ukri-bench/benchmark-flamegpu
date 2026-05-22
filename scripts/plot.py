@@ -7,6 +7,7 @@ import math
 import os
 import pathlib
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import seaborn as sns
 
@@ -79,6 +80,15 @@ def plot(df: pd.DataFrame, output_path: pathlib.Path | None,  output_format: str
     # Get the number of unique values of this for the number of hues
     num_hues = len(df["GPU / Toolkit"].unique())
 
+    # Split out the GPU vendor, based on the start of the GPU model. This may not be super robust.
+    df["GPU vendor"] = np.select(
+        [
+            df["gpu_name"].str.contains(r"NVIDIA|GeForce", case=False, na=False),
+            df["gpu_name"].str.contains(r"AMD|Instinct|Radeon", case=False, na=False),
+        ],
+        ["NVIDIA", "AMD"],
+        default="Unknown")
+
     # Rename the benchmark_name column just for rendering purposes
     df = df.rename(columns={
         "benchmark_name": "Benchmark Model",
@@ -92,9 +102,12 @@ def plot(df: pd.DataFrame, output_path: pathlib.Path | None,  output_format: str
 
     # Conditionally plot onto different axes if subplots is set, with one subplot per model
     subplot_dfs = [("", df)]
+    style_key = "Benchmark Model"
     if use_subplots:
         unique_benchmark_models = df["Benchmark Model"].unique()
         subplot_dfs = [(model, df[df["Benchmark Model"] == model]) for model in unique_benchmark_models]
+        # use a different style differentiator, seeing as each plot has the same ones
+        style_key = "GPU vendor"
 
     # Compute the shape of the subplots, by taking the sqrt of the number of subplots to get the number of rows.
     num_subplots = len(subplot_dfs)
@@ -116,7 +129,7 @@ def plot(df: pd.DataFrame, output_path: pathlib.Path | None,  output_format: str
             x="agent_count",
             y="agent_updates_per_s_total",
             hue="GPU / Toolkit",
-            style="Benchmark Model",
+            style=style_key,
             markers=True,
             errorbar=("pi", 100), # show full range with the error bars
             estimator="median", # plot the median, to avoid errors when the first run is an outlier breaking seaborn bars
