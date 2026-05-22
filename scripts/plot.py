@@ -94,6 +94,7 @@ def plot(df: pd.DataFrame, output_path: pathlib.Path | None,  output_format: str
         style="Benchmark Model",
         markers=True,
         errorbar=("pi", 100), # show full range with the error bars
+        estimator="median", # plot the median, to avoid errors when the first run is an outlier breaking seaborn bars
         err_style="bars",
     )
     plt.title("ukri-bench/benchmark-flamegpu: Throughput against Agent Count per GPU/Toolkit per Benchmark Model")
