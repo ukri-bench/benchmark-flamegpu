@@ -3,6 +3,10 @@
 #include <inttypes.h>
 #include <cfloat>
 #include <filesystem>
+#include <set>
+#include <string>
+#include <vector>
+
 
 // CLI related code
 // CLI11 causes a memory leak in cudafe for CUDA 12.x, so is only used in .cpp file(s)
@@ -25,6 +29,8 @@ struct Arguments {
     bool dry_run = false;
     // The output path for performance data
     std::filesystem::path output_path = std::filesystem::current_path() / "benchmark-flamegpu.json";
+    // Vector of selected model names
+    std::vector<std::string> models = {};
 };
 
 /**
