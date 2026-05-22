@@ -1,9 +1,14 @@
 #include "cli.h"
 
+#include <set>
+#include <string>
+#include <vector>
+
 // Causes memory issues in cudafe for atleast CUDA 12.4, 12.5 & 12.9 with gcc 12, so only include in a .cpp file
 #include <CLI/App.hpp>
 #include <CLI/Formatter.hpp>
 #include <CLI/Config.hpp>
+#include <CLI/ExtraValidators.hpp>
 
 Arguments parse_cli(int argc, const char ** argv) {
     // Struct containing values to be returned
@@ -17,6 +22,8 @@ Arguments parse_cli(int argc, const char ** argv) {
     app.add_flag("--validation", args.validation, "Enable validation checks");
     app.add_flag("--dry-run", args.dry_run, "Perform a dry-run");
     app.add_option("-o,--output", args.output_path, "Path to the output file")->capture_default_str();
+    std::set<std::string> modelNames = {"circles_spatial3D_fp32", "circles_spatial3D_fp64"};
+    app.add_option("--models", args.models, "Subset of the available benchmark models to run")->check(CLI::IsMember(modelNames))->expected(1, -1);
 
     // Parse the cli
     try {
