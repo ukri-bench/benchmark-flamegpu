@@ -11,24 +11,48 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
+
 def cli() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Combine and plot benchmark-flamegpu from multiple runs")
-    parser.add_argument("json_paths", type=pathlib.Path, nargs="+", help="Paths to JSON files containing benchmark-flamegpu data")
-    parser.add_argument("-o", "--output", type=pathlib.Path, help="Path to a directory for output files")
-    parser.add_argument("--show", action="store_true", help="Sequentially display each plot interactively")
-    parser.add_argument("--format", choices=["png", "svg"], default="png", help="The output format for figures written to disk (default png)")
-    parser.add_argument("--subplots", action="store_true", help="Render a plot per benchmark model, useful when comparing many benchmark runs")
+    parser = argparse.ArgumentParser(
+        description="Combine and plot benchmark-flamegpu from multiple runs"
+    )
+    parser.add_argument(
+        "json_paths",
+        type=pathlib.Path,
+        nargs="+",
+        help="Paths to JSON files containing benchmark-flamegpu data",
+    )
+    parser.add_argument(
+        "-o", "--output", type=pathlib.Path, help="Path to a directory for output files"
+    )
+    parser.add_argument(
+        "--show",
+        action="store_true",
+        help="Sequentially display each plot interactively",
+    )
+    parser.add_argument(
+        "--format",
+        choices=["png", "svg"],
+        default="png",
+        help="The output format for figures written to disk (default png)",
+    )
+    parser.add_argument(
+        "--subplots",
+        action="store_true",
+        help="Render a plot per benchmark model, useful when comparing many benchmark runs",
+    )
     args = parser.parse_args()
     return args
 
-def json_to_df(f: os.PathLike) -> pd.DataFrame:    
+
+def json_to_df(f: os.PathLike) -> pd.DataFrame:
     path = pathlib.Path(f)
     if not path.is_file():
         raise RuntimeError(f"'{path}' is not a file")
-    
-    with open(path, 'r') as fp:
+
+    with open(path, "r") as fp:
         data = json.load(fp)
-    
+
     if "metadata" not in data:
         raise RuntimeError(f"Required key 'metadata' not found in '{path}'")
 
@@ -40,7 +64,7 @@ def json_to_df(f: os.PathLike) -> pd.DataFrame:
 
     if "benchmarks" not in data:
         raise RuntimeError(f"Required key 'benchmarks' not found in '{path}'")
-    
+
     # Todo: make this more flexible once other benchmarks are added
     if not data["benchmarks"]:
         raise RuntimeError(f"'benchmarks' in '{path}' has no members / data")
@@ -52,7 +76,7 @@ def json_to_df(f: os.PathLike) -> pd.DataFrame:
         temp_df["benchmark_name"] = name
         df_list.append(temp_df)
 
-    # combine the benchmark dataframes 
+    # combine the benchmark dataframes
     df = pd.concat(df_list, ignore_index=True)
 
     # embed metadata in each row
@@ -60,6 +84,7 @@ def json_to_df(f: os.PathLike) -> pd.DataFrame:
     df = df.assign(**metadata)
 
     return df
+
 
 def load_data(json_paths: list[os.PathLike]) -> dict[pathlib.Path, pd.DataFrame]:
     dfs = []
@@ -69,12 +94,19 @@ def load_data(json_paths: list[os.PathLike]) -> dict[pathlib.Path, pd.DataFrame]
             dfs.append(df)
     return pd.concat(dfs, ignore_index=True) if dfs else pd.DataFrame()
 
-def plot(df: pd.DataFrame, output_path: pathlib.Path | None,  output_format: str, show: bool, use_subplots: bool) -> bool:
+
+def plot(
+    df: pd.DataFrame,
+    output_path: pathlib.Path | None,
+    output_format: str,
+    show: bool,
+    use_subplots: bool,
+) -> bool:
     if df.empty:
         print("No data to plot")
         return False
 
-    # Combine the gpu_name and gpu_toolkit into a single field to use as 
+    # Combine the gpu_name and gpu_toolkit into a single field to use as
     df = df.copy()
     df["GPU / Toolkit"] = df["gpu_name"] + " - " + df["gpu_toolkit"]
     # Get the number of unique values of this for the number of hues
@@ -87,13 +119,15 @@ def plot(df: pd.DataFrame, output_path: pathlib.Path | None,  output_format: str
             df["gpu_name"].str.contains(r"AMD|Instinct|Radeon", case=False, na=False),
         ],
         ["NVIDIA", "AMD"],
-        default="Unknown")
+        default="Unknown",
+    )
 
     # Rename the benchmark_name column just for rendering purposes
-    df = df.rename(columns={
-        "benchmark_name": "Benchmark Model",
-    })
-
+    df = df.rename(
+        columns={
+            "benchmark_name": "Benchmark Model",
+        }
+    )
 
     # Plot the agent count against agent updates per second, comparing different devices and gpu toolkits
     # Todo: make this produce multiple plots, with more factor determining the different builds to compare
@@ -105,7 +139,10 @@ def plot(df: pd.DataFrame, output_path: pathlib.Path | None,  output_format: str
     style_key = "Benchmark Model"
     if use_subplots:
         unique_benchmark_models = df["Benchmark Model"].unique()
-        subplot_dfs = [(model, df[df["Benchmark Model"] == model]) for model in unique_benchmark_models]
+        subplot_dfs = [
+            (model, df[df["Benchmark Model"] == model])
+            for model in unique_benchmark_models
+        ]
         # use a different style differentiator, seeing as each plot has the same ones
         style_key = "GPU vendor"
 
@@ -115,24 +152,28 @@ def plot(df: pd.DataFrame, output_path: pathlib.Path | None,  output_format: str
     subplot_ncols = int(math.ceil(num_subplots / subplot_nrows))
 
     # Create the figure with subplots
-    fig, _ = plt.subplots(subplot_nrows, subplot_ncols, figsize=(16, 9), layout="constrained", squeeze=False, sharex=True, sharey=True)
-
-    # Store legend data to ensure a single shared legend can be used
-    all_legend_handles = []
-    all_legend_labels = []
+    fig, _ = plt.subplots(
+        subplot_nrows,
+        subplot_ncols,
+        figsize=(16, 9),
+        layout="constrained",
+        squeeze=False,
+        sharex=True,
+        sharey=True,
+    )
 
     # Iterate the axes and model data, plotting each
     for ax, (model_name, df) in zip(fig.axes, subplot_dfs):
-        plot = sns.lineplot(
+        sns.lineplot(
             ax=ax,
-            data = df,
+            data=df,
             x="agent_count",
             y="agent_updates_per_s_total",
             hue="GPU / Toolkit",
             style=style_key,
             markers=True,
-            errorbar=("pi", 100), # show full range with the error bars
-            estimator="median", # plot the median, to avoid errors when the first run is an outlier breaking seaborn bars
+            errorbar=("pi", 100),  # show full range with the error bars
+            estimator="median",  # plot the median, to avoid errors when the first run is an outlier breaking seaborn bars
             err_style="bars",
         )
         ax.set_title(f"{model_name}")
@@ -157,8 +198,9 @@ def plot(df: pd.DataFrame, output_path: pathlib.Path | None,  output_format: str
 
     if show:
         plt.show()
-    
+
     return True
+
 
 def main():
     args = cli()
@@ -166,6 +208,7 @@ def main():
     # Todo: Preprocess multiple values for repetitions? and produce numeric outputs not just plots? (maybe a diff script)
     success = plot(dataframes, args.output, args.format, args.show, args.subplots)
     return success
+
 
 if __name__ == "__main__":
     main()
