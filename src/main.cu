@@ -87,6 +87,10 @@ int main(int argc, const char ** argv) {
     // Setup/process CLI
     Arguments args = parse_cli(argc, argv);
 
+    for (const auto& s : args.models) {
+        printf("s: %s\n", s.c_str());
+    }
+
     // Define a root json object
     nlohmann::json json_root;
 
@@ -105,13 +109,19 @@ int main(int argc, const char ** argv) {
         {"gpu_name", flamegpu::detail::gpu::getDeviceName(args.device)},
         {"cpu_model_name", metadata::get_cpu_model()},
     };
-    // Run the benchmark(s)
-
+    // Run the benchmark(s), if none were specified or the specific model was included via the cli
+    auto modelEnabled = [&](std::string_view model) {
+        if (args.models.empty()) return true;
+        return std::find(args.models.begin(), args.models.end(), model) != args.models.end();
+    };
     // Sweep over the spatial 3d model with a range of target volumes with a fixed agent density and communication radius
-    json_root["benchmarks"]["circles_spatial3D_fp32"] = sweep_circles_spatial3d_fp32(args);
-
+    if (modelEnabled("circles_spatial3D_fp32")) {
+        json_root["benchmarks"]["circles_spatial3D_fp32"] = sweep_circles_spatial3d_fp32(args);
+    }
     // Sweep over the spatial 3d model in fp64
-    json_root["benchmarks"]["circles_spatial3D_fp64"] = sweep_circles_spatial3d_fp64(args);
+    if (modelEnabled("circles_spatial3D_fp64")) {
+        json_root["benchmarks"]["circles_spatial3D_fp64"] = sweep_circles_spatial3d_fp64(args);
+    }
 
     // Output the json data to stdout and (potentially) disk
     printf("benchmark-flamegpu.json:\n%s\n", json_root.dump(2).c_str());
