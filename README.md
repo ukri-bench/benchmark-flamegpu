@@ -76,6 +76,11 @@ with either:
 - HIP/ROCm >= `7.0` with the included `hipcc`
   - The ROCm CMake modules must be discoverable by `find_package`
 
+> [!NOTE]
+> Older CUDA or HIP/ROCm versions may be used by setting `FLAMEGPU_ALLOW_UNSUPPORTED_COMPILER=ON`, however, compilation errors are likely as this is untested and unsupported.
+>
+> This is primarily to allow benchmarking on AMD systems which do not yet have a ROCm 7 installation available (e.g. ARCHER2)
+
 Clone this repository
 
 ```bash
