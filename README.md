@@ -136,12 +136,25 @@ Assuming `build` was used as the CMake build directory:
 
 ```bash
 cd build
-./bin/Release/benchmark-flamegpu
+./bin/Release/benchmark-flamegpu -o output.json
 ```
 
 > [!CAUTION]
 > - Todo: Example of how to test correctness
 > - Todo: Example of how to extract performance/FoM
+
+#### Extracting Performance data
+
+Benchmark data is written out to `stdout` in a JSON object, and optionally written to disk via `-o` / `-output`.
+
+Benchmark data can be plotted using the included plotting script: `scripts/plot.py`. See `-h`/`--help` for full CLI options.
+
+```bash
+python -m venv ./scripts/.venv/
+source ./scripts/.venv/bin/activate
+python -m pip install -r ./scripts/requirements.txt
+python ./scripts/plot.py -o output -- output.json
+```
 
 ## Example performance data
 
