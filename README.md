@@ -12,6 +12,7 @@ Alpha
 
 - [Peter Heywood](https://github.com/ptheywood)
 - [Paul Richmond](https://github.com/mondus)
+- [Robert Chisholm](https://github.com/robadob)
 <!-- - Todo: [Maintainer from the living benchmarks project](https://github.com/) -->
 
 ## Overview
