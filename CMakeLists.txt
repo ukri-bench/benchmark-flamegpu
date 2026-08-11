@@ -11,7 +11,7 @@ set(FLAMEGPU_VERSION_ALLOW_HASH "ON")
 # Include the cmake file which downloads and adds the flamegpu target (prior to cmake --install support being added)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/flamegpu.cmake)
 
-# Create the project, only enabling c++ support for now as CUDA/HIP enablement depends on the FLAMEGPU_GPU cache variable
+# Create the project, only enabling c++ support as CUDA/HIP support is enabled based on FLAME GPU cache variable(s)
 project(benchmark-flamegpu CXX)
 
 # Include common rules from the FLAMEGPU/FLAMEGPU2 repositories CMake
