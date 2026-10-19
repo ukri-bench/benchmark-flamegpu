@@ -231,28 +231,28 @@ const FlockingSpatial3DFP32RunData run_flocking_spatial3D_fp32(
     flamegpu::EnvironmentDescription env = model.Environment();
 
     // Population size to generate, if no agents are loaded from disk
-    env.newProperty("POPULATION_TO_GENERATE", 80000u);
+    env.newProperty<float>("POPULATION_TO_GENERATE", AGENT_COUNT);
 
     // Environment Bounds
 
-    env.newProperty("MIN_POSITION", 0.0f);
-    env.newProperty("MAX_POSITION", 400.0f);
+    env.newProperty<float>("MIN_POSITION", 0.0f);
+    env.newProperty<float>("MAX_POSITION", ENV_WIDTH);
 
     // Initialisation parameter(s)
-    env.newProperty("INITIAL_SPEED", 1.0f); // always start with a speed of 1.0
+    env.newProperty<float>("INITIAL_SPEED", 1.0f); // always start with a speed of 1.0
 
     // Interaction radius
-    env.newProperty("INTERACTION_RADIUS", 5.0f);
-    env.newProperty("SEPARATION_RADIUS", 1.0f);
+    env.newProperty<float>("INTERACTION_RADIUS", COMM_RADIUS);
+    env.newProperty<float>("SEPARATION_RADIUS", COMM_RADIUS / 5.0f);
 
     // Global Scalers
-    env.newProperty("TIME_SCALE", 1.0f); // 1.0 for benchmarking to behave the same as the other simulators.
-    env.newProperty("GLOBAL_SCALE", 1.0f); // 1.0 for comparing to other benchmarks
+    env.newProperty<float>("TIME_SCALE", 1.0f); // 1.0 for benchmarking to behave the same as the other simulators.
+    env.newProperty<float>("GLOBAL_SCALE", 1.0f); // 1.0 for comparing to other benchmarks
 
     // Rule scalers
-    env.newProperty("STEER_SCALE", 0.03f); // cohere scale?  0.03
-    env.newProperty("COLLISION_SCALE", 0.015f); // separate_scale? 0.015
-    env.newProperty("MATCH_SCALE", 0.05f); // match 0.05
+    env.newProperty<float>("STEER_SCALE", 0.03f); // cohere scale?  0.03
+    env.newProperty<float>("COLLISION_SCALE", 0.015f); // separate_scale? 0.015
+    env.newProperty<float>("MATCH_SCALE", 0.05f); // match 0.05
 
 
     // Define the Location 2D spatial message list
