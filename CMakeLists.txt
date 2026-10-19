@@ -79,6 +79,10 @@ SET(ALL_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/circles_spatial3D_fp32.cu
     ${CMAKE_CURRENT_SOURCE_DIR}/src/circles_spatial3D_fp64.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/circles_spatial3D_fp64.cu
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/flocking_spatial3D_fp32.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/flocking_spatial3D_fp32.cu
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/flocking_spatial3D_fp64.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/flocking_spatial3D_fp64.cu
 )
 
 # Define the binary target
