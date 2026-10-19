@@ -16,6 +16,7 @@
 #include "./circles_spatial3D_fp64.h"
 #include "./flocking_spatial3D_fp32.h"
 #include "./flocking_spatial3D_fp64.h"
+#include "./schelling_array2D_i32.h"
 
 // Include/use some FLAME GPU internal objects/methods for convenience. These are not considered part of the public API so may breaking changes may occur without a major version increase
 #include "flamegpu/detail/gpu/device_name.hpp"
@@ -141,6 +142,33 @@ nlohmann::json sweep_flocking_spatial3d_fp64(Arguments args) {
     return data;
 }
 
+nlohmann::json sweep_schelling_array2d_i64(Arguments args) {
+    nlohmann::json data;
+
+    const std::vector<double> TARGET_ENV_VOLUMES = { 1000, 3375, 8000, 15625, 27000, 42875, 64000, 91125, 125000, 166375, 216000, 274625, 343000, 421875, 512000, 614125, 729000, 857375, 1000000, 1157625, 1331000, 1520875, 1728000, 1953125, 2197000 };
+
+    // Fixed proportion of cells filled
+    const double density = 0.8;
+
+    std::vector<SchellingArray2Di32RunData> benchmark_data = {};
+    for (const double& targetVolume : TARGET_ENV_VOLUMES) {
+        const std::uint32_t grid_width = static_cast<int>(round(sqrt(targetVolume)));
+        const std::uint32_t populated_count = (grid_width * grid_width) * density;
+        for (std::uint32_t rep = 0; rep < args.repetitions; rep++) {
+            printf("run_schelling_array2d_i64(%d, %" PRId64 ", %u, %u, %u, %u, %d)\n", args.device, args.seed, args.steps, grid_width, populated_count, args.validation);
+            if (!args.dry_run) {
+                SchellingArray2Di32RunData run_data = run_schelling_array2D_i32(args.device, args.seed + rep, args.steps, grid_width, populated_count, args.validation);
+                benchmark_data.push_back(run_data);
+            }
+        }
+    }
+
+    for (const auto& run_data : benchmark_data) {
+        data.push_back(run_data);
+    }
+    return data;
+}
+
 int main(int argc, const char ** argv) {
     // Setup/process CLI
     Arguments args = parse_cli(argc, argv);
@@ -187,6 +215,10 @@ int main(int argc, const char ** argv) {
     // Sweep over the flocking 3d model in fp64
     if (modelEnabled("flocking_spatial3D_fp64")) {
         json_root["benchmarks"]["flocking_spatial3D_fp64"] = sweep_flocking_spatial3d_fp64(args);
+    }
+    // Sweep over the schelling 2d model utilising 32-bit integer computation
+    if (modelEnabled("schelling_array2D_i32")) {
+        json_root["benchmarks"]["schelling_array2D_i64"] = sweep_schelling_array2d_i64(args);
     }
 
     // Output the json data to stdout and (potentially) disk
