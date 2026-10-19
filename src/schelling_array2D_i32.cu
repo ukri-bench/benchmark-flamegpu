@@ -25,6 +25,7 @@ namespace {
         const unsigned int GRID_WIDTH = FLAMEGPU->environment.getProperty<unsigned int>("GRID_WIDTH");
         const unsigned int CELL_COUNT = GRID_WIDTH * GRID_WIDTH;
         // Generate a population of agents, which are just default initialised for now
+        FLAMEGPU->agent("agent").newAgent();  // Bug #1422 workaround (error if resize empty agent vector)
         flamegpu::DeviceAgentVector population = FLAMEGPU->agent("agent").getPopulationData();
         population.resize(CELL_COUNT);
 

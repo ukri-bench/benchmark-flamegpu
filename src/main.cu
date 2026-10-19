@@ -155,7 +155,7 @@ nlohmann::json sweep_schelling_array2d_i64(Arguments args) {
         const std::uint32_t grid_width = static_cast<int>(round(sqrt(targetVolume)));
         const std::uint32_t populated_count = (grid_width * grid_width) * density;
         for (std::uint32_t rep = 0; rep < args.repetitions; rep++) {
-            printf("run_schelling_array2d_i64(%d, %" PRId64 ", %u, %u, %u,%d)\n", args.device, args.seed, args.steps, grid_width, populated_count, args.validation);
+            printf("run_schelling_array2d_i64(%d, %" PRId64 ", %u, %u, %u, %d)\n", args.device, args.seed, args.steps, grid_width, populated_count, args.validation);
             if (!args.dry_run) {
                 SchellingArray2Di32RunData run_data = run_schelling_array2D_i32(args.device, args.seed + rep, args.steps, grid_width, populated_count, args.validation);
                 benchmark_data.push_back(run_data);
@@ -200,22 +200,22 @@ int main(int argc, const char ** argv) {
         if (args.models.empty()) return true;
         return std::find(args.models.begin(), args.models.end(), model) != args.models.end();
     };
-    // Sweep over the spatial 3d model with a range of target volumes with a fixed agent density and communication radius
-    if (modelEnabled("circles_spatial3D_fp32")) {
-        json_root["benchmarks"]["circles_spatial3D_fp32"] = sweep_circles_spatial3d_fp32(args);
-    }
-    // Sweep over the spatial 3d model in fp64
-    if (modelEnabled("circles_spatial3D_fp64")) {
-        json_root["benchmarks"]["circles_spatial3D_fp64"] = sweep_circles_spatial3d_fp64(args);
-    }
-    // Sweep over the flocking 3d model with a range of target volumes with a fixed agent density and communication radius
-    if (modelEnabled("flocking_spatial3D_fp32")) {
-        json_root["benchmarks"]["flocking_spatial3D_fp32"] = sweep_flocking_spatial3d_fp32(args);
-    }
-    // Sweep over the flocking 3d model in fp64
-    if (modelEnabled("flocking_spatial3D_fp64")) {
-        json_root["benchmarks"]["flocking_spatial3D_fp64"] = sweep_flocking_spatial3d_fp64(args);
-    }
+    //// Sweep over the spatial 3d model with a range of target volumes with a fixed agent density and communication radius
+    //if (modelEnabled("circles_spatial3D_fp32")) {
+    //    json_root["benchmarks"]["circles_spatial3D_fp32"] = sweep_circles_spatial3d_fp32(args);
+    //}
+    //// Sweep over the spatial 3d model in fp64
+    //if (modelEnabled("circles_spatial3D_fp64")) {
+    //    json_root["benchmarks"]["circles_spatial3D_fp64"] = sweep_circles_spatial3d_fp64(args);
+    //}
+    //// Sweep over the flocking 3d model with a range of target volumes with a fixed agent density and communication radius
+    //if (modelEnabled("flocking_spatial3D_fp32")) {
+    //    json_root["benchmarks"]["flocking_spatial3D_fp32"] = sweep_flocking_spatial3d_fp32(args);
+    //}
+    //// Sweep over the flocking 3d model in fp64
+    //if (modelEnabled("flocking_spatial3D_fp64")) {
+    //    json_root["benchmarks"]["flocking_spatial3D_fp64"] = sweep_flocking_spatial3d_fp64(args);
+    //}
     // Sweep over the schelling 2d model utilising 32-bit integer computation
     if (modelEnabled("schelling_array2D_i32")) {
         json_root["benchmarks"]["schelling_array2D_i64"] = sweep_schelling_array2d_i64(args);
