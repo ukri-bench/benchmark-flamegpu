@@ -74,7 +74,7 @@ namespace {
         // Iterate 3x3 Moore neighbourhood (this does not include the central cell)
         unsigned int my_type = FLAMEGPU->getVariable<unsigned int>("type");
         for (auto message : FLAMEGPU->message_in.wrap(my_x, my_y)) {
-            int message_type = message.getVariable<unsigned int>("type");
+            const unsigned int message_type = message.getVariable<unsigned int>("type");
             same_type_neighbours += my_type == message_type;
             diff_type_neighbours += (my_type != message_type) && (message_type != UNOCCUPIED);
         }
@@ -192,7 +192,6 @@ const SchellingArray2Di32RunData run_schelling_array2D_i32(
     agent.newFunction("output_type", output_type).setMessageOutput("type_message");
     agent.newFunction("determine_status", determine_status).setMessageInput("type_message");
     agent.newFunction("update_locations", update_locations);
-
 
     // Define a submodel for conflict resolution for agent movement
     // This is necessary for parallel random movement of agents, to resolve conflict between agents moving to the same location
