@@ -3,6 +3,7 @@
 
 import argparse
 import json
+import fnmatch
 import math
 import os
 import pathlib
@@ -10,6 +11,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from typing import Sequence
 
 
 def cli() -> argparse.Namespace:
@@ -41,6 +43,14 @@ def cli() -> argparse.Namespace:
         action="store_true",
         help="Render a plot per benchmark model, useful when comparing many benchmark runs",
     )
+    parser.add_argument(
+        "--models",
+        type=str,
+        nargs="+",
+        default=["*"],
+        help="Sequence of patterns to match against model names for filtering",
+    )
+
     args = parser.parse_args()
     return args
 
@@ -101,6 +111,7 @@ def plot(
     output_format: str,
     show: bool,
     use_subplots: bool,
+    benchmark_model_patterns: Sequence[str] | None,
 ) -> bool:
     if df.empty:
         print("No data to plot")
@@ -122,12 +133,28 @@ def plot(
         default="Unknown",
     )
 
+    # Filter which benchmark models are to be plotted, using unitx-style (non-regex) patterns
+    if benchmark_model_patterns is not None and len(benchmark_model_patterns) > 0:
+        print(benchmark_model_patterns)
+        # if "*" is in the patterns at all, all will be returned, so only do any filtering if it is not.
+        if "*" not in benchmark_model_patterns:
+            # build a mask
+            mask = [any(fnmatch.fnmatch(val, pattern) for pattern in benchmark_model_patterns) for val in df["benchmark_name"]]
+            df_filtered = df[mask]
+            if len(df_filtered) == 0:
+                print(f"Warning: Filters resulted in 0 rows. Plotting all models ({", ".join(df["benchmark_name"].unique())}).")
+            else:
+                df = df_filtered
+
     # Rename the benchmark_name column just for rendering purposes
     df = df.rename(
         columns={
             "benchmark_name": "Benchmark Model",
         }
     )
+
+    # Build the order of series (hue) sorted by max value in the y axis.
+    hue_order = df.groupby("GPU / Toolkit")["agent_updates_per_s_total"].max().sort_values(ascending=False).index.tolist()
 
     # Plot the agent count against agent updates per second, comparing different devices and gpu toolkits
     # Todo: make this produce multiple plots, with more factor determining the different builds to compare
@@ -163,13 +190,14 @@ def plot(
     )
 
     # Iterate the axes and model data, plotting each
-    for ax, (model_name, df) in zip(fig.axes, subplot_dfs):
+    for ax, (model_name, sub_df) in zip(fig.axes, subplot_dfs):
         sns.lineplot(
             ax=ax,
-            data=df,
+            data=sub_df,
             x="agent_count",
             y="agent_updates_per_s_total",
             hue="GPU / Toolkit",
+            hue_order=hue_order,
             style=style_key,
             markers=True,
             errorbar=("pi", 100),  # show full range with the error bars
@@ -206,7 +234,7 @@ def main():
     args = cli()
     dataframes = load_data(args.json_paths)
     # Todo: Preprocess multiple values for repetitions? and produce numeric outputs not just plots? (maybe a diff script)
-    success = plot(dataframes, args.output, args.format, args.show, args.subplots)
+    success = plot(dataframes, args.output, args.format, args.show, args.subplots, args.models)
     return success
 
 
