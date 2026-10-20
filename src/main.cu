@@ -155,9 +155,9 @@ nlohmann::json sweep_schelling_array2d_i64(Arguments args) {
         const std::uint32_t grid_width = static_cast<int>(round(sqrt(targetVolume)));
         const std::uint32_t populated_count = (grid_width * grid_width) * density;
         for (std::uint32_t rep = 0; rep < args.repetitions; rep++) {
-            printf("run_schelling_array2d_i64(%d, %" PRId64 ", %u, %u, %u, %d)\n", args.device, args.seed, args.steps, grid_width, populated_count, args.validation);
+            printf("run_schelling_array2d_i64(%d, %" PRId64 ", %u, %u, %u, %d)\n", args.device, args.seed, args.steps, populated_count, grid_width, args.validation);
             if (!args.dry_run) {
-                SchellingArray2Di32RunData run_data = run_schelling_array2D_i32(args.device, args.seed + rep, args.steps, grid_width, populated_count, args.validation);
+                SchellingArray2Di32RunData run_data = run_schelling_array2D_i32(args.device, args.seed + rep, args.steps, populated_count, grid_width, args.validation);
                 benchmark_data.push_back(run_data);
             }
         }
