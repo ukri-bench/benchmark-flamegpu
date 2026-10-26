@@ -32,6 +32,14 @@ nlohmann::json sweep_circles_spatial3d_fp32(Arguments args) {
     const float comm_radius = 2.f;
     const float density = 1.f;
 
+    if (args.profiling) {
+        const double width = round(cbrt(TARGET_ENV_VOLUMES.back()));
+        const std::uint32_t agent_count = static_cast<float>(ceil((width * width * width) * density));
+        CirclesSpatial3DFP32RunData run_data = run_circles_spatial3D_fp32(args.device, args.seed, args.steps, agent_count, width, comm_radius, args.validation);
+        data.push_back(run_data);
+        return data;
+    }
+
     std::vector<CirclesSpatial3DFP32RunData> benchmark_data = {};
     for (const float& targetVolume : TARGET_ENV_VOLUMES) {
         const float width = round(cbrt(targetVolume));
@@ -65,6 +73,14 @@ nlohmann::json sweep_circles_spatial3d_fp64(Arguments args) {
     const double comm_radius = 2.0;
     const double density = 1.0;
 
+    if (args.profiling) {
+        const double width = round(cbrt(TARGET_ENV_VOLUMES.back()));
+        const std::uint32_t agent_count = static_cast<float>(ceil((width * width * width) * density));
+        CirclesSpatial3DFP64RunData run_data = run_circles_spatial3D_fp64(args.device, args.seed, args.steps, agent_count, width, comm_radius, args.validation);
+        data.push_back(run_data);
+        return data;
+    }
+
     std::vector<CirclesSpatial3DFP64RunData> benchmark_data = {};
     for (const double& targetVolume : TARGET_ENV_VOLUMES) {
         const double width = round(cbrt(targetVolume));
@@ -95,6 +111,14 @@ nlohmann::json sweep_flocking_spatial3d_fp32(Arguments args) {
     const double comm_radius = 2.0;
     const double density = 1.0;
 
+    if (args.profiling) {
+        const double width = round(cbrt(TARGET_ENV_VOLUMES.back()));
+        const std::uint32_t agent_count = static_cast<float>(ceil((width * width * width) * density));
+        FlockingSpatial3DFP32RunData run_data = run_flocking_spatial3D_fp32(args.device, args.seed, args.steps, agent_count, width, comm_radius, args.validation);
+        data.push_back(run_data);
+        return data;
+    }
+
     std::vector<FlockingSpatial3DFP32RunData> benchmark_data = {};
     for (const double& targetVolume : TARGET_ENV_VOLUMES) {
         const double width = round(cbrt(targetVolume));
@@ -123,6 +147,14 @@ nlohmann::json sweep_flocking_spatial3d_fp64(Arguments args) {
     const double comm_radius = 2.0;
     const double density = 1.0;
 
+    if (args.profiling) {
+        const double width = round(cbrt(TARGET_ENV_VOLUMES.back()));
+        const std::uint32_t agent_count = static_cast<float>(ceil((width * width * width) * density));
+        FlockingSpatial3DFP64RunData run_data = run_flocking_spatial3D_fp64(args.device, args.seed, args.steps, agent_count, width, comm_radius, args.validation);
+        data.push_back(run_data);
+        return data;
+    }
+
     std::vector<FlockingSpatial3DFP64RunData> benchmark_data = {};
     for (const double& targetVolume : TARGET_ENV_VOLUMES) {
         const double width = round(cbrt(targetVolume));
@@ -149,6 +181,14 @@ nlohmann::json sweep_schelling_array2d_i64(Arguments args) {
 
     // Fixed proportion of cells filled
     const double density = 0.8;
+
+    if (args.profiling) {
+        const std::uint32_t grid_width = static_cast<int>(round(sqrt(TARGET_ENV_VOLUMES.back())));
+        const std::uint32_t populated_count = (grid_width * grid_width) * density;
+        SchellingArray2Di32RunData run_data = run_schelling_array2D_i32(args.device, args.seed, args.steps, populated_count, grid_width, args.validation);
+        data.push_back(run_data);
+        return data;
+    }
 
     std::vector<SchellingArray2Di32RunData> benchmark_data = {};
     for (const double& targetVolume : TARGET_ENV_VOLUMES) {

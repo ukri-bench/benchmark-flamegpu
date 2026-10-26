@@ -21,6 +21,7 @@ Arguments parse_cli(int argc, const char ** argv) {
     app.add_option("--seed", args.seed, "RNG Seed used for simulations")->capture_default_str();  // todo: should this be a seed for the bench, but a different seed per simulation?
     app.add_flag("--validation", args.validation, "Enable validation checks");
     app.add_flag("--dry-run", args.dry_run, "Perform a dry-run");
+    app.add_flag("--profiling", args.profiling, "Perform a single run at the largest size (exclusive with --dry-run)");
     app.add_option("-o,--output", args.output_path, "Path to the output file")->capture_default_str();
     std::set<std::string> modelNames = {"circles_spatial3D_fp32", "circles_spatial3D_fp64", "flocking_spatial3D_fp32", "flocking_spatial3D_fp64" };
     app.add_option("--models", args.models, "Subset of the available benchmark models to run")->check(CLI::IsMember(modelNames))->expected(1, -1);
@@ -31,7 +32,11 @@ Arguments parse_cli(int argc, const char ** argv) {
     } catch (const CLI::ParseError &e) {
         std::exit(app.exit(e));
     }
-
+    // Validate exclusive options are not co-enabled
+    if (args.dry_run && args.profiling) {
+        fprintf(stderr, "--dry-run and --profiling are exclusive, both cannot be enabled simultaneously.\n");
+        std::exit(EXIT_FAILURE);
+    }
     // Return the struct containing CLI args
     return args;
 }

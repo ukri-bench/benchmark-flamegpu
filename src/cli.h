@@ -27,6 +27,9 @@ struct Arguments {
     bool validation = false;
     // If a dry run should be performed
     bool dry_run = false;
+    // If we should do a profiling run, rather than a benchmark run
+    // (exclusive to dry_run)
+    bool profiling = true;
     // The output path for performance data
     std::filesystem::path output_path = std::filesystem::current_path() / "benchmark-flamegpu.json";
     // Vector of selected model names
