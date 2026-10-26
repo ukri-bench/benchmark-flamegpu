@@ -23,7 +23,7 @@ Arguments parse_cli(int argc, const char ** argv) {
     app.add_flag("--dry-run", args.dry_run, "Perform a dry-run");
     app.add_flag("--profiling", args.profiling, "Perform a single run at the largest size (exclusive with --dry-run)");
     app.add_option("-o,--output", args.output_path, "Path to the output file")->capture_default_str();
-    std::set<std::string> modelNames = {"circles_spatial3D_fp32", "circles_spatial3D_fp64", "flocking_spatial3D_fp32", "flocking_spatial3D_fp64" };
+    std::set<std::string> modelNames = {"circles_spatial3D_fp32", "circles_spatial3D_fp64", "flocking_spatial3D_fp32", "flocking_spatial3D_fp64", "schelling_array2D_i32" };
     app.add_option("--models", args.models, "Subset of the available benchmark models to run")->check(CLI::IsMember(modelNames))->expected(1, -1);
 
     // Parse the cli
