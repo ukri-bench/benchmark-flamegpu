@@ -247,7 +247,7 @@ const FlockingSpatial3DFP32RunData run_flocking_spatial3D_fp32(
     flamegpu::EnvironmentDescription env = model.Environment();
 
     // Population size to generate, if no agents are loaded from disk
-    env.newProperty<float>("POPULATION_TO_GENERATE", AGENT_COUNT);
+    env.newProperty<std::uint32_t>("POPULATION_TO_GENERATE", AGENT_COUNT);
 
     // Environment Bounds
 
