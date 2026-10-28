@@ -209,6 +209,22 @@ namespace {
 
         return flamegpu::ALIVE;
     }
+    FLAMEGPU_INIT_FUNCTION(create_agents) {
+        // Seed a host prng using the same seed as the device prng (but this is a different engine)
+        std::mt19937_64 rng(FLAMEGPU->random.getSeed());
+        const auto ENV_MIN = FLAMEGPU->environment.getProperty<double>("MIN_POSITION");
+        const auto ENV_MAX = FLAMEGPU->environment.getProperty<double>("MAX_POSITION");
+        std::uniform_real_distribution<double> dist(ENV_MIN, ENV_MAX);
+
+        // Generate the agents with random uniform initial locations
+        const auto AGENT_COUNT = FLAMEGPU->environment.getProperty<std::uint32_t>("POPULATION_TO_GENERATE");
+        auto circle = FLAMEGPU->agent("Boid");
+        for (unsigned int i = 0; i < AGENT_COUNT; i++) {
+            auto agent = circle.newAgent();
+            agent.setVariable<double>("x", dist(rng));
+            agent.setVariable<double>("y", dist(rng));
+        }
+    }
 
 }  // namespace
 
@@ -273,8 +289,8 @@ const FlockingSpatial3DFP64RunData run_flocking_spatial3D_fp64(
     flamegpu::AgentDescription agent = model.newAgent("Boid");
     agent.newVariable<double>("x");
     agent.newVariable<double>("y");
-    agent.newVariable<double>("fx");
-    agent.newVariable<double>("fy");
+    agent.newVariable<double>("fx", 0);
+    agent.newVariable<double>("fy", 0);
     // Define the agents methods
     flamegpu::AgentFunctionDescription outputdataDescription = agent.newFunction("outputdata", outputdata);
     outputdataDescription.setMessageOutput("location");
@@ -286,6 +302,7 @@ const FlockingSpatial3DFP64RunData run_flocking_spatial3D_fp64(
     inputdataDescription.dependsOn(outputdataDescription);
     // Build the execution graph
     model.generateLayers();
+    model.addInitFunction(create_agents);
 
     // Create the simulation object
     flamegpu::CUDASimulation simulation(model);
