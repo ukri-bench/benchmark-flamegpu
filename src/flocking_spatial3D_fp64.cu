@@ -73,8 +73,8 @@ namespace {
     FLAMEGPU_AGENT_FUNCTION(outputdata, flamegpu::MessageNone, flamegpu::MessageSpatial2D) {
         // Output each agents publicly visible properties.
         FLAMEGPU->message_out.setVariable<flamegpu::id_t>("id", FLAMEGPU->getID());
-        FLAMEGPU->message_out.setVariable<double>("x", FLAMEGPU->getVariable<double>("x"));
-        FLAMEGPU->message_out.setVariable<double>("y", FLAMEGPU->getVariable<double>("y"));
+        FLAMEGPU->message_out.setVariable<float>("x", FLAMEGPU->getVariable<double>("x"));
+        FLAMEGPU->message_out.setVariable<float>("y", FLAMEGPU->getVariable<double>("y"));
         FLAMEGPU->message_out.setVariable<double>("fx", FLAMEGPU->getVariable<double>("fx"));
         FLAMEGPU->message_out.setVariable<double>("fy", FLAMEGPU->getVariable<double>("fy"));
         return flamegpu::ALIVE;
