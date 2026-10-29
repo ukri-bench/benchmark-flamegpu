@@ -108,8 +108,8 @@ nlohmann::json sweep_flocking_spatial3d_fp32(Arguments args) {
     const std::vector<double> TARGET_ENV_VOLUMES = { 1000, 3375, 8000, 15625, 27000, 42875, 64000, 91125, 125000, 166375, 216000, 274625, 343000, 421875, 512000, 614125, 729000, 857375, 1000000, 1157625, 1331000, 1520875, 1728000, 1953125, 2197000 };
 
     // Fixed comm radius and (target) agent density
-    const double comm_radius = 2.0;
-    const double density = 1.0;
+    const double comm_radius = 0.05;
+    const double density = 15.0;
 
     if (args.profiling) {
         const double width = round(cbrt(TARGET_ENV_VOLUMES.back()));
@@ -144,8 +144,8 @@ nlohmann::json sweep_flocking_spatial3d_fp64(Arguments args) {
     const std::vector<double> TARGET_ENV_VOLUMES = { 1000, 3375, 8000, 15625, 27000, 42875, 64000, 91125, 125000, 166375, 216000, 274625, 343000, 421875, 512000, 614125, 729000, 857375, 1000000, 1157625, 1331000, 1520875, 1728000, 1953125, 2197000 };
 
     // Fixed comm radius and (target) agent density
-    const double comm_radius = 2.0;
-    const double density = 1.0;
+    const double comm_radius = 0.05;
+    const double density = 15.0;
 
     if (args.profiling) {
         const double width = round(cbrt(TARGET_ENV_VOLUMES.back()));
