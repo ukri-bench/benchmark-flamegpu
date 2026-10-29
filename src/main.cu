@@ -112,8 +112,8 @@ nlohmann::json sweep_flocking_spatial3d_fp32(Arguments args) {
     const double density = 15.0;
 
     if (args.profiling) {
-        const double width = round(cbrt(TARGET_ENV_VOLUMES.back()));
-        const std::uint32_t agent_count = static_cast<float>(ceil((width * width * width) * density));
+        const double width = round(cbrt(TARGET_ENV_VOLUMES.back()/density));
+        const std::uint32_t agent_count = TARGET_ENV_VOLUMES.back();
         FlockingSpatial3DFP32RunData run_data = run_flocking_spatial3D_fp32(args.device, args.seed, args.steps, agent_count, width, comm_radius, args.validation);
         data.push_back(run_data);
         return data;
@@ -121,8 +121,8 @@ nlohmann::json sweep_flocking_spatial3d_fp32(Arguments args) {
 
     std::vector<FlockingSpatial3DFP32RunData> benchmark_data = {};
     for (const double& targetVolume : TARGET_ENV_VOLUMES) {
-        const double width = round(cbrt(targetVolume));
-        const std::uint32_t agent_count = static_cast<float>(ceil((width * width * width) * density));
+        const double width = round(cbrt(targetVolume / density));
+        const std::uint32_t agent_count = targetVolume;
         for (std::uint32_t rep = 0; rep < args.repetitions; rep++) {
             printf("run_flocking_spatial3D_fp32(%d, %" PRId64 ", %u, %u, %f, %f, %d)\n", args.device, args.seed, args.steps, agent_count, width, comm_radius, args.validation);
             if (!args.dry_run) {
@@ -148,8 +148,8 @@ nlohmann::json sweep_flocking_spatial3d_fp64(Arguments args) {
     const double density = 15.0;
 
     if (args.profiling) {
-        const double width = round(cbrt(TARGET_ENV_VOLUMES.back()));
-        const std::uint32_t agent_count = static_cast<float>(ceil((width * width * width) * density));
+        const double width = round(cbrt(TARGET_ENV_VOLUMES.back() / density));
+        const std::uint32_t agent_count = TARGET_ENV_VOLUMES.back();
         FlockingSpatial3DFP64RunData run_data = run_flocking_spatial3D_fp64(args.device, args.seed, args.steps, agent_count, width, comm_radius, args.validation);
         data.push_back(run_data);
         return data;
@@ -157,8 +157,8 @@ nlohmann::json sweep_flocking_spatial3d_fp64(Arguments args) {
 
     std::vector<FlockingSpatial3DFP64RunData> benchmark_data = {};
     for (const double& targetVolume : TARGET_ENV_VOLUMES) {
-        const double width = round(cbrt(targetVolume));
-        const std::uint32_t agent_count = static_cast<float>(ceil((width * width * width) * density));
+        const double width = round(cbrt(targetVolume / density));
+        const std::uint32_t agent_count = targetVolume;
         for (std::uint32_t rep = 0; rep < args.repetitions; rep++) {
             printf("run_flocking_spatial3D_fp64(%d, %" PRId64 ", %u, %u, %f, %f, %d)\n", args.device, args.seed, args.steps, agent_count, width, comm_radius, args.validation);
             if (!args.dry_run) {
