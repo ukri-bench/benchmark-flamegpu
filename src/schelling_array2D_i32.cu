@@ -4,6 +4,7 @@
 #include <vector>
 #include "schelling_array2D_i32.h"
 #include "flamegpu/flamegpu.h"
+#include "profile_amd.h"
 
 // Include/use some FLAME GPU internal objects/methods for convenience. These are not considered part of the public API so may breaking changes may occur without a major version increase
 #include "flamegpu/detail/SteadyClockTimer.h"
@@ -313,6 +314,7 @@ const SchellingArray2Di32RunData run_schelling_array2D_i32(
     }
 
     // Create the simulation object
+    enable_profiler(model);
     flamegpu::CUDASimulation simulation(model);
 
     // Set simulation configuration properties
