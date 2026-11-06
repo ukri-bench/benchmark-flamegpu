@@ -4,7 +4,6 @@
 #include <vector>
 #include "flocking_spatial3D_fp64.h"
 #include "flamegpu/flamegpu.h"
-#include "profile_amd.h"
 
 // Include/use some FLAME GPU internal objects/methods for convenience. These are not considered part of the public API so may breaking changes may occur without a major version increase
 #include "flamegpu/detail/SteadyClockTimer.h"
@@ -306,7 +305,6 @@ const FlockingSpatial3DFP64RunData run_flocking_spatial3D_fp64(
     model.addInitFunction(create_agents);
 
     // Create the simulation object
-    enable_profiler(model);
     flamegpu::CUDASimulation simulation(model);
 
     // Set simulation configuration properties

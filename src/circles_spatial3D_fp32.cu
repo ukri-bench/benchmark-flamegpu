@@ -4,7 +4,6 @@
 #include <vector>
 #include "circles_spatial3D_fp32.h"
 #include "flamegpu/flamegpu.h"
-#include "profile_amd.h"
 
 // Include/use some FLAME GPU internal objects/methods for convenience. These are not considered part of the public API so may breaking changes may occur without a major version increase
 #include "flamegpu/detail/SteadyClockTimer.h"
@@ -176,7 +175,6 @@ const CirclesSpatial3DFP32RunData run_circles_spatial3D_fp32(
     layer_1.addAgentFunction(move);
 
     // Create the simulation object
-    enable_profiler(model);
     flamegpu::CUDASimulation simulation(model);
 
     // Set simulation configuration properties
