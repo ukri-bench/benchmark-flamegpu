@@ -2,9 +2,10 @@
 cmake_minimum_required(VERSION 3.25.2...4.3.0 FATAL_ERROR)
 
 # Specify the version of FLAMEGPU to use
-# This will need changing once the amdgpu branch is merged, and a tagged version is released. This current value is ephemeral.
-# Override via the cache if this branch no longer exists.
-set(FLAMEGPU_VERSION "amdgpu" CACHE STRING "FLAMEGPU/FLAMEGPU2 git branch or tag to use")
+# This should be released with a version tag once a releasee is made with HIP/ROCm support
+# 4fa74199ad0623642b51c9e49fad3884c23f5419 is the commit where amdgpu was merged into master
+# Override via the cache if this branch/commit/tag no longer exists.
+set(FLAMEGPU_VERSION "4fa74199ad0623642b51c9e49fad3884c23f5419" CACHE STRING "FLAMEGPU/FLAMEGPU2 git branch or tag to use")
 # If the above version is a hash instead, also set FLAMEGPU_VERSION_ALLOW_HASH to ON
 set(FLAMEGPU_VERSION_ALLOW_HASH "ON")
 
