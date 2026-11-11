@@ -169,3 +169,7 @@ This section contains example performance data from selected HPC systems.
 ## License
 
 This benchmark description and associated files are released under the GNU AGPLv3.
+
+## Acknowledgements
+
+We acknowledge IT Services at The University of Sheffield for the provision of services for High Performance Computing.
