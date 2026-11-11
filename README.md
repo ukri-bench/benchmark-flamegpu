@@ -175,3 +175,5 @@ This benchmark description and associated files are released under the GNU AGPLv
 We acknowledge IT Services at The University of Sheffield for the provision of services for High Performance Computing.
 
 This work made use of the facilities of the N8 Centre of Excellence in Computationally Intensive Research (N8 CIR) provided and funded by the N8 research partnership and EPSRC (Grant No. EP/T022167/1). The Centre is coordinated by the Universities of Durham, Manchester, and York.
+
+This work used the HPC Hardware Lab which is part of the COSMA facility which includes the DiRAC@Durham facility managed by the Institute for Computational Cosmology on behalf of the STFC DiRAC HPC Facility (www.dirac.ac.uk). The equipment was funded by BEIS capital funding via STFC capital grants ST/K00042X/1, ST/P002293/1, ST/R002371/1 and ST/S002502/1, Durham University and STFC operations grant ST/R000832/1. DiRAC is part of the National e-Infrastructure. The HPC Hardware Lab is funded from various sources including the UK ExCALIBUR programme.
