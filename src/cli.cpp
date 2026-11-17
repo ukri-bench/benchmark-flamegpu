@@ -15,10 +15,8 @@ Arguments parse_cli(int argc, const char ** argv) {
     Arguments args = {};
     // Define the CLI using CLI11
     CLI::App app{"ukri-bench/benchmark-flamegpu"};
+    app.add_option("-c,--config", args.config_path, "Path to the benchmark configuration JSON file")->check(CLI::ExistingFile);
     app.add_option("-d,--device", args.device, "GPU Device ID (0 indexed)")->capture_default_str();
-    app.add_option("-r,--repetitions", args.repetitions, "The number of times to repeat each simulation")->capture_default_str();
-    app.add_option("-s,--steps", args.steps, "The number of steps for each simulation (> 0)")->check(CLI::PositiveNumber)->capture_default_str();
-    app.add_option("--seed", args.seed, "RNG Seed used for simulations")->capture_default_str();  // todo: should this be a seed for the bench, but a different seed per simulation?
     app.add_flag("--validation", args.validation, "Enable validation checks");
     app.add_flag("--dry-run", args.dry_run, "Perform a dry-run");
     app.add_option("-o,--output", args.output_path, "Path to the output file")->capture_default_str();

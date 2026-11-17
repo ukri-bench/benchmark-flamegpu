@@ -17,16 +17,12 @@
 struct Arguments {
     // The GPU index to use
     std::int32_t device = 0;
-    // The number of times each simulation is repeated
-    std::uint32_t repetitions = 3u;
-    // The number of steps for each simulation
-    std::uint32_t steps = 1000u;
-    // PRNG seed
-    std::uint64_t seed = 0u;
     // If validation should be performed for this run?
     bool validation = false;
     // If a dry run should be performed
     bool dry_run = false;
+    // Path to a configuration file
+    std::filesystem::path config_path = std::filesystem::current_path() / "config/default.json";
     // The output path for performance data
     std::filesystem::path output_path = std::filesystem::current_path() / "benchmark-flamegpu.json";
     // Vector of selected model names

@@ -1,0 +1,1208 @@
+{
+  "benchmarks": {
+    "circles_spatial3D_fp32": [
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 1000,
+        "env_width": 10,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 1000,
+        "env_width": 10,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 1000,
+        "env_width": 10,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 3375,
+        "env_width": 15,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 3375,
+        "env_width": 15,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 3375,
+        "env_width": 15,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 8000,
+        "env_width": 20,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 8000,
+        "env_width": 20,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 8000,
+        "env_width": 20,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 15625,
+        "env_width": 25,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 15625,
+        "env_width": 25,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 15625,
+        "env_width": 25,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 27000,
+        "env_width": 30,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 27000,
+        "env_width": 30,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 27000,
+        "env_width": 30,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 42875,
+        "env_width": 35,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 42875,
+        "env_width": 35,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 42875,
+        "env_width": 35,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 64000,
+        "env_width": 40,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 64000,
+        "env_width": 40,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 64000,
+        "env_width": 40,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 91125,
+        "env_width": 45,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 91125,
+        "env_width": 45,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 91125,
+        "env_width": 45,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 125000,
+        "env_width": 50,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 125000,
+        "env_width": 50,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 125000,
+        "env_width": 50,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 166375,
+        "env_width": 55,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 166375,
+        "env_width": 55,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 166375,
+        "env_width": 55,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 216000,
+        "env_width": 60,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 216000,
+        "env_width": 60,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 216000,
+        "env_width": 60,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 274625,
+        "env_width": 65,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 274625,
+        "env_width": 65,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 274625,
+        "env_width": 65,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 343000,
+        "env_width": 70,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 343000,
+        "env_width": 70,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 343000,
+        "env_width": 70,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 421875,
+        "env_width": 75,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 421875,
+        "env_width": 75,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 421875,
+        "env_width": 75,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 512000,
+        "env_width": 80,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 512000,
+        "env_width": 80,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 512000,
+        "env_width": 80,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 614125,
+        "env_width": 85,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 614125,
+        "env_width": 85,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 614125,
+        "env_width": 85,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 729000,
+        "env_width": 90,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 729000,
+        "env_width": 90,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 729000,
+        "env_width": 90,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 857375,
+        "env_width": 95,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 857375,
+        "env_width": 95,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 857375,
+        "env_width": 95,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 1000000,
+        "env_width": 100,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 1000000,
+        "env_width": 100,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 1000000,
+        "env_width": 100,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 1157625,
+        "env_width": 105,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 1157625,
+        "env_width": 105,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 1157625,
+        "env_width": 105,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 1331000,
+        "env_width": 110,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 1331000,
+        "env_width": 110,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 1331000,
+        "env_width": 110,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 1520875,
+        "env_width": 115,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 1520875,
+        "env_width": 115,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 1520875,
+        "env_width": 115,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 1728000,
+        "env_width": 120,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 1728000,
+        "env_width": 120,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 1728000,
+        "env_width": 120,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 1953125,
+        "env_width": 125,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 1953125,
+        "env_width": 125,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 1953125,
+        "env_width": 125,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 2197000,
+        "env_width": 130,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 2197000,
+        "env_width": 130,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 2197000,
+        "env_width": 130,
+        "comm_radius": 1.0,
+        "validation": false
+      }
+    ],
+    "circles_spatial3D_fp64": [
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 1000,
+        "env_width": 10,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 1000,
+        "env_width": 10,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 1000,
+        "env_width": 10,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 3375,
+        "env_width": 15,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 3375,
+        "env_width": 15,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 3375,
+        "env_width": 15,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 8000,
+        "env_width": 20,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 8000,
+        "env_width": 20,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 8000,
+        "env_width": 20,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 15625,
+        "env_width": 25,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 15625,
+        "env_width": 25,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 15625,
+        "env_width": 25,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 27000,
+        "env_width": 30,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 27000,
+        "env_width": 30,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 27000,
+        "env_width": 30,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 42875,
+        "env_width": 35,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 42875,
+        "env_width": 35,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 42875,
+        "env_width": 35,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 64000,
+        "env_width": 40,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 64000,
+        "env_width": 40,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 64000,
+        "env_width": 40,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 91125,
+        "env_width": 45,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 91125,
+        "env_width": 45,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 91125,
+        "env_width": 45,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 125000,
+        "env_width": 50,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 125000,
+        "env_width": 50,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 125000,
+        "env_width": 50,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 166375,
+        "env_width": 55,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 166375,
+        "env_width": 55,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 166375,
+        "env_width": 55,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 216000,
+        "env_width": 60,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 216000,
+        "env_width": 60,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 216000,
+        "env_width": 60,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 274625,
+        "env_width": 65,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 274625,
+        "env_width": 65,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 274625,
+        "env_width": 65,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 343000,
+        "env_width": 70,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 343000,
+        "env_width": 70,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 343000,
+        "env_width": 70,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 421875,
+        "env_width": 75,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 421875,
+        "env_width": 75,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 421875,
+        "env_width": 75,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 512000,
+        "env_width": 80,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 512000,
+        "env_width": 80,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 512000,
+        "env_width": 80,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 614125,
+        "env_width": 85,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 614125,
+        "env_width": 85,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 614125,
+        "env_width": 85,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 729000,
+        "env_width": 90,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 729000,
+        "env_width": 90,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 729000,
+        "env_width": 90,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 857375,
+        "env_width": 95,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 857375,
+        "env_width": 95,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 857375,
+        "env_width": 95,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 1000000,
+        "env_width": 100,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 1000000,
+        "env_width": 100,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 1000000,
+        "env_width": 100,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 1157625,
+        "env_width": 105,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 1157625,
+        "env_width": 105,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 1157625,
+        "env_width": 105,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 1331000,
+        "env_width": 110,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 1331000,
+        "env_width": 110,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 1331000,
+        "env_width": 110,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 1520875,
+        "env_width": 115,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 1520875,
+        "env_width": 115,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 1520875,
+        "env_width": 115,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 1728000,
+        "env_width": 120,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 1728000,
+        "env_width": 120,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 1728000,
+        "env_width": 120,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 1953125,
+        "env_width": 125,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 1953125,
+        "env_width": 125,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 1953125,
+        "env_width": 125,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 12,
+        "steps": 1000,
+        "agent_count": 2197000,
+        "env_width": 130,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 13,
+        "steps": 1000,
+        "agent_count": 2197000,
+        "env_width": 130,
+        "comm_radius": 1.0,
+        "validation": false
+      },
+      {
+        "seed": 14,
+        "steps": 1000,
+        "agent_count": 2197000,
+        "env_width": 130,
+        "comm_radius": 1.0,
+        "validation": false
+      }
+    ]
+  }
+}
