@@ -52,27 +52,45 @@ Alpha
 
 ## Building the benchmark
 
-The benchmark can currently only be built manually via CMake. 
+The benchmark can be built using Spack or manually via CMake.
 
-<!-- The benchmark can be built using Spack or manually. If you are using the 
+<!-- If you are using the 
 ReFrame method to run the benchmark described below, it will automatically
-perform the build step for you.
+perform the build step for you. -->
 
-Once it has been built the benchmark executable is called `name-of-exe.x` -->
+Once it has been built the benchmark executable is called `benchmark-flamegpu`
 
-<!-- ### Spack build
+### Spack build
 
 A Spack package is provided in `spack/`:
 
 ```bash
-spack repo add ./spack
-spack info <package name>
+spack repo add ./spack/spack_repo/benchmark_flamegpu/
+spack info benchmark-flamegpu
 ```
-- ADD: Describe Spack spec and variants available
+
+There are several variants available:
+
+- `+cuda` enable CUDA support, must also specify a value for `cuda_arch`
+- `+rocm` enable ROCm/HIP support, must also specify `amdgpu_target`
+- `+seatbelts` enable/disable additional runtime checks. Disable for benchmarking
+- `+telemetry` enable/disable FLAMEPGU usage telemetry. Disable for benchmarking
 
 Note: to use Spack, you must have Spack installed on the system you are using and
 a valid Spack system configuration. Example Spack configurations are available
-in a separate repository: [https://github.com/ukri-bench/system-configs] -->
+in a separate repository: [https://github.com/ukri-bench/system-configs]
+
+For NVIDIA GPUs (with SM_80 GPUs as an example)):
+
+```bash
+spack dev-build benchmark-flamegpu@main +cuda cuda_arch=80
+```
+
+For AMD GPUs (with Mi350x as the example):
+
+```bash
+spack dev-build benchmark-flamegpu@main +rocm amdgpu_target=gfx942
+```
 
 ### Manual build
 
@@ -157,6 +175,13 @@ Use `-h`/`--help` to see a full list of command line arguments.
 ```bash
 cd build
 ./bin/Release/benchmark-flamegpu -o output.json
+```
+
+Or if installed via spack.
+
+```bash
+spack load benchmark-flamegpu
+benchmark-flamegpu -o output.json
 ```
 
 `scripts/slurm/` includes example job submission scripts for several HPC systems, built manually using CMake. These are intended to be submit from the directory they are contained within.

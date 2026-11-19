@@ -102,3 +102,20 @@ endif()
 if(TARGET rocm_smi64)
     target_link_libraries("${PROJECT_NAME}" PRIVATE rocm_smi64)  # might need to be amdsmi on some systems?
 endif()
+
+# Setup install rule for th9e benchmark target, so spack can install it.
+# This includes workarounds due to changes in upstream flamepgu2 cmake that need removing / fixing.
+# Override flamegpu's coimmon.cmake disbaling cmake install rules (this needs fixing upstream)
+set(CMAKE_SKIP_INSTALL_RULES OFF CACHE BOOL "" FORCE)
+set(CMAKE_SKIP_INSTALL_RULES OFF)
+include(GNUInstallDirs)
+# Prevent top-level cmake_install.cmake from trying to include() cmake_install.cmake from static/header-only dependencies in _deps/ such as flamegpu2
+get_property(dep_subdirs DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" PROPERTY SUBDIRECTORIES)
+foreach(subdir IN LISTS dep_subdirs)
+    set_property(DIRECTORY "${subdir}" PROPERTY EXCLUDE_FROM_ALL TRUE)
+endforeach()
+# Define the installation target.
+install(TARGETS "${PROJECT_NAME}"
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
