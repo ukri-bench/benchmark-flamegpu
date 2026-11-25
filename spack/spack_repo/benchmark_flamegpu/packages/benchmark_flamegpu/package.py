@@ -16,7 +16,8 @@ class BenchmarkFlamegpu(CMakePackage, CudaPackage, ROCmPackage):
     license("AGPL-3.0-only")
     maintainers("ptheywood", "mondus", "robadob")
 
-    version("main", tag="main", no_cache=True)    
+    version("main", tag="main", no_cache=True)
+    version("initial-benchmark-spack", tag="initial-benchmark-spack", no_cache=True, git="file:///home/ptheywood/code/flamegpu/benchmark-flamegpu",)
 
     variant(
         "seatbelts",
@@ -112,6 +113,12 @@ class BenchmarkFlamegpu(CMakePackage, CudaPackage, ROCmPackage):
     # Define where the root CMakeLists.txt is within the benchmark-flamegpu repository
     root_cmakelists_dir = "."
 
+    def setup_build_environment(self, env: EnvironmentModifications) -> None:
+        # Various ROCm/HIP CMakeLists set -x hip or --offload-arch for cxx objects, so must alwasy use a hip-aware host compiler, i.e. not gcc
+        if self.spec.satisfies("+rocm"):
+            env.set("CC", self.spec["hip"].hipcc)
+            env.set("CXX", self.spec["hip"].hipcc)
+
     def cmake_args(self):
         args = []
 
@@ -121,6 +128,8 @@ class BenchmarkFlamegpu(CMakePackage, CudaPackage, ROCmPackage):
             args.append(
                 self.define("CMAKE_HIP_ARCHITECTURES", self.spec.variants["amdgpu_target"].value)
             )
+            # Explicitly set amdclang++ as the hip compiler
+            args.append(self.define("CMAKE_HIP_COMPILER", os.path.join(self.spec["llvm-amdgpu"].prefix.bin, "amdclang++")))
 
         # Enable CUDA and forward architectures
         if self.spec.satisfies("+cuda"):
