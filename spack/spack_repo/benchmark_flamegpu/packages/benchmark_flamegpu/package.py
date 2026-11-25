@@ -66,8 +66,8 @@ class BenchmarkFlamegpu(CMakePackage, CudaPackage, ROCmPackage):
         depends_on("rocm-smi-lib") # for metadata collection
 
     # benchmark-flamegpu dependencies regardless of build type
-    depends_on("nlohmann-json@3.11.3:", type="build")
-    depends_on("cli11@2.5:", type="build") # spack 1.2.2 only includes 2.5.0. We fetch 2.6.2 in cmake
+    depends_on("nlohmann-json@3.11.3:")
+    depends_on("cli11@2.5:") # spack 1.2.2 only includes 2.5.0. We fetch 2.6.2 in cmake
     depends_on("git@1.6.6:", type="build") # techincally optional, but adds build metadata
     
 
@@ -120,6 +120,6 @@ class BenchmarkFlamegpu(CMakePackage, CudaPackage, ROCmPackage):
         args.append(self.define("FLAMEGPU_TELEMETRY_SUPPRESS_NOTICE", "ON"))
         
         # Encourage CMake to find packages before fetching them, this might work...
-        args.append(self.define("FETCHCONTENT_TRY_FIND_PACKAGE_MODE", "ALWAYS"))
+        # args.append(self.define("FETCHCONTENT_TRY_FIND_PACKAGE_MODE", "ALWAYS"))
 
         return args
