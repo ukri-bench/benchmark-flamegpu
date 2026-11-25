@@ -133,7 +133,10 @@ class BenchmarkFlamegpu(CMakePackage, CudaPackage, ROCmPackage):
         # Usage telemetry defautls to ON, so always specify a value (and suppress the notice)
         args.append(self.define("FLAMEGPU_SHARE_USAGE_STATISTICS", self.spec.variants["telemetry"].value))
         args.append(self.define("FLAMEGPU_TELEMETRY_SUPPRESS_NOTICE", "ON"))
-        
+
+        # configure this cmake to explcitly use spack-provided transitive dependencies
+        args.append(self.define("USE_SPACK_FLAMEGPU2_DEPS", "ON"))
+
         # Encourage CMake to find packages before fetching them, this might work...
         # args.append(self.define("FETCHCONTENT_TRY_FIND_PACKAGE_MODE", "ALWAYS"))
 

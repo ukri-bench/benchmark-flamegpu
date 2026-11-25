@@ -16,6 +16,11 @@ project(benchmark-flamegpu CXX)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/cli11.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/nlohmann_json.cmake)
 
+# Conditionally include some extra CMake for spack builds, so that transitive dependencies of flamegpu2 are used from spack, without modifying upstream flamegpu2 (where full, cross platform support would require larger changes)
+option(USE_SPACK_FLAMEGPU2_DEPS "Use Spack dependencies instead of FetchContent where supported" OFF)
+if(USE_SPACK_FLAMEGPU2_DEPS)
+    include(${CMAKE_CURRENT_LIST_DIR}/cmake/spack-deps.cmake)
+endif()
 # Include the cmake file which downloads and adds the flamegpu target (prior to cmake --install support being added upstream)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/flamegpu.cmake)
 
