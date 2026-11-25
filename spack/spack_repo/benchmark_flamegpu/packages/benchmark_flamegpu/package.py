@@ -72,7 +72,17 @@ class BenchmarkFlamegpu(CMakePackage, CudaPackage, ROCmPackage):
     
 
     # FLAMEGPU2 is not (yet) an independent spack package (it cannot be --installed), instead specify some transitive dependencies for now (excluding un-used/not relevant dependencies)
-    # depends_on("flamegpu2", type="build")  # variants would need to matc   
+    # depends_on("flamegpu2", type="build")  # variants would need to match
+
+    # Instead, we can define it as a resource for now so it is fetched by spack not CMake and force CMake to use this version. This does duplicate where versions are stored.
+    resource(
+        name="flamegpu2",
+        git="https://github.com/FLAMEGPU/FLAMEGPU2.git",
+        tag="4fa74199ad0623642b51c9e49fad3884c23f5419", # amdgpu support commit in master
+        destination="spack-resources",
+        placement="flamegpu2",
+    )
+
     # Generic transivitve dependencies from flamegpu2
     # depends_on("nlohmann-json@3.11.3:") # duplicated
     depends_on("tinyxml2@9.0.0:")
@@ -108,6 +118,11 @@ class BenchmarkFlamegpu(CMakePackage, CudaPackage, ROCmPackage):
         if self.spec.satisfies("+cuda"):
             args.append(self.define("FLAMEGPU_BACKEND", "CUDA"))
             args.append(self.define("CMAKE_CUDA_ARCHITECTURES", self.spec.variants["cuda_arch"].value))
+
+        # Get CMake to use the spack resource FLAMEGPU2 rather than using fetch content via FLAMEGPU_ROOT
+        flamegpu_root = os.path.join(self.stage.source_path, "spack-resources", "flamegpu2")
+        if os.path.exists(flamegpu_root):
+            args.append(self.define("FLAMEGPU_ROOT", flamegpu_root))
 
         # Always forward the value for seatbelts, defaults to ON in CMake
         args.append(self.define("FLAMEGPU_SEATBELTS", self.spec.variants["seatbelts"].value))
