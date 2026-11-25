@@ -91,7 +91,15 @@ class BenchmarkFlamegpu(CMakePackage, CudaPackage, ROCmPackage):
     with when("+cuda"):
         # depends_on("cccl") # spack concretizier is failing with cccl, ignoring for now (the version that ships with CUDA should be fine)
         depends_on("nvtx@3:", when="+profiling")
-        # jitify is not correctly versioned, requires custom patching and is not a spack package. Ignoring for now.
+        # jitify is not correctly versioned, requires custom patching and is not a spack package.
+        # Instead, donwnload the relevant upstream commit into a spack resource
+        resource(
+            name="jitify",
+            git="https://github.com/NVIDIA/jitify.git",
+            commit="44e978b21fc8bdb6b2d7d8d179523c8350db72e5",
+            destination="spack-resources",
+            placement="jitify",
+        )
     # ROCM only transivitve dependencies from flamegpu2
     with when("+rocm"):
         depends_on("rocm-core")
@@ -123,6 +131,12 @@ class BenchmarkFlamegpu(CMakePackage, CudaPackage, ROCmPackage):
         flamegpu_root = os.path.join(self.stage.source_path, "spack-resources", "flamegpu2")
         if os.path.exists(flamegpu_root):
             args.append(self.define("FLAMEGPU_ROOT", flamegpu_root))
+
+        # Use the spack-resource jitify2, if appropraite
+        if self.spec.satisfies("+cuda"):
+            jitify_root = os.path.join(self.stage.source_path, "spack-resources", "jitify")
+            if os.path.exists(jitify_root):
+                args.append(self.define("FETCHCONTENT_SOURCE_DIR_JITIFY", jitify_root))
 
         # Always forward the value for seatbelts, defaults to ON in CMake
         args.append(self.define("FLAMEGPU_SEATBELTS", self.spec.variants["seatbelts"].value))
