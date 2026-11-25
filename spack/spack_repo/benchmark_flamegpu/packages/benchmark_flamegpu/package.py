@@ -36,7 +36,12 @@ class BenchmarkFlamegpu(CMakePackage, CudaPackage, ROCmPackage):
     )
 
     # Must have one of the +cuda or +rocm variant enabled (no CPU builds). Ideally this should always be explicit, but extending CudaPackage & ROCmPackage seems to ignore sticky=True
-    requires("+cuda", "+rocm", policy="one_of", msg="One of either +cuda or +rocm must be enabled")
+    requires(
+        "+cuda",
+        "+rocm",
+        policy="one_of",
+        msg="One of either +cuda or +rocm must be enabled",
+    )
     # enforce cuda_arch must be set, for consisteny between +cuda and +rocm (although compiler defaults would produce valid binaries)
     conflicts("cuda_arch=none", when="+cuda", msg="CUDA architecture is required")
 
@@ -44,7 +49,7 @@ class BenchmarkFlamegpu(CMakePackage, CudaPackage, ROCmPackage):
     depends_on("c", type="build")
     depends_on("cxx", type="build")
     depends_on("cmake@3.25.2:4.3", type="build")
-    depends_on("git@1.6.6:", type="build") # techincally optional, but adds build metadata
+    depends_on("git@1.6.6:", type="build")  # techincally optional
 
     depends_on("nlohmann-json@3.11.3:")
     depends_on("cli11@2.5:")
@@ -59,7 +64,7 @@ class BenchmarkFlamegpu(CMakePackage, CudaPackage, ROCmPackage):
     resource(
         name="flamegpu2",
         git="https://github.com/FLAMEGPU/FLAMEGPU2.git",
-        tag="4fa74199ad0623642b51c9e49fad3884c23f5419", # amdgpu support commit in master
+        tag="4fa74199ad0623642b51c9e49fad3884c23f5419",  # amdgpu support commit in master
         destination="spack-resources",
         placement="flamegpu2",
     )
@@ -90,7 +95,7 @@ class BenchmarkFlamegpu(CMakePackage, CudaPackage, ROCmPackage):
         depends_on("rocthrust")
         depends_on("hipcub")
         depends_on("hiprand")
-        depends_on("rocprofiler-sdk", when="+profiling") # maybe rocprofiler-dev ?
+        depends_on("rocprofiler-sdk", when="+profiling")
 
     # Define where the root CMakeLists.txt is within the benchmark-flamegpu repository
     root_cmakelists_dir = "."
@@ -106,9 +111,13 @@ class BenchmarkFlamegpu(CMakePackage, CudaPackage, ROCmPackage):
             # Always forward the value for seatbelts, defaults to ON in CMake
             self.define("FLAMEGPU_SEATBELTS", self.spec.variants["seatbelts"].value),
             # Alwasy forward if profiling should be enabled value
-            self.define("FLAMEGPU_ENABLE_PROFILING", self.spec.variants["profiling"].value),
+            self.define(
+                "FLAMEGPU_ENABLE_PROFILING", self.spec.variants["profiling"].value
+            ),
             # Usage telemetry defautls to ON, so always specify a value (and suppress the notice)
-            self.define("FLAMEGPU_SHARE_USAGE_STATISTICS", self.spec.variants["telemetry"].value),
+            self.define(
+                "FLAMEGPU_SHARE_USAGE_STATISTICS", self.spec.variants["telemetry"].value
+            ),
             self.define("FLAMEGPU_TELEMETRY_SUPPRESS_NOTICE", "ON"),
             # configure this cmake to explcitly use spack-provided transitive dependencies
             self.define("USE_SPACK_FLAMEGPU2_DEPS", "ON"),
@@ -119,24 +128,39 @@ class BenchmarkFlamegpu(CMakePackage, CudaPackage, ROCmPackage):
         # Define ROCm only cmake arguments
         if self.spec.satisfies("+rocm"):
             # Explicitly set amdclang++ as the hip compiler
-            args.append(self.define("CMAKE_HIP_COMPILER", os.path.join(self.spec["llvm-amdgpu"].prefix.bin, "amdclang++")))
+            args.append(
+                self.define(
+                    "CMAKE_HIP_COMPILER",
+                    os.path.join(self.spec["llvm-amdgpu"].prefix.bin, "amdclang++"),
+                )
+            )
             args.append(self.define("FLAMEGPU_BACKEND", "HIP"))
             args.append(
-                self.define("CMAKE_HIP_ARCHITECTURES", self.spec.variants["amdgpu_target"].value)
+                self.define(
+                    "CMAKE_HIP_ARCHITECTURES", self.spec.variants["amdgpu_target"].value
+                )
             )
 
         # Define CUDA only cmake arguments
         if self.spec.satisfies("+cuda"):
             args.append(self.define("FLAMEGPU_BACKEND", "CUDA"))
-            args.append(self.define("CMAKE_CUDA_ARCHITECTURES", self.spec.variants["cuda_arch"].value))
+            args.append(
+                self.define(
+                    "CMAKE_CUDA_ARCHITECTURES", self.spec.variants["cuda_arch"].value
+                )
+            )
 
         # Ensure the spack-defined resource for flamegpu2 is used (prior to it becoming a spack package itself)
-        flamegpu_root = os.path.join(self.stage.source_path, "spack-resources", "flamegpu2")
+        flamegpu_root = os.path.join(
+            self.stage.source_path, "spack-resources", "flamegpu2"
+        )
         if os.path.exists(flamegpu_root):
             args.append(self.define("FLAMEGPU_ROOT", flamegpu_root))
         # Use the spack-resource jitify2 (if appropraite)
         if self.spec.satisfies("+cuda"):
-            jitify_root = os.path.join(self.stage.source_path, "spack-resources", "jitify")
+            jitify_root = os.path.join(
+                self.stage.source_path, "spack-resources", "jitify"
+            )
             if os.path.exists(jitify_root):
                 args.append(self.define("FETCHCONTENT_SOURCE_DIR_JITIFY", jitify_root))
 
