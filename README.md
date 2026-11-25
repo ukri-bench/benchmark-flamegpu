@@ -229,10 +229,11 @@ python ./scripts/plot.py -o output -- output.json
 
 ## Example performance data
 
-This section contains example performance data from selected HPC systems.
+Example performance data from selected HPC systems is included in the [`benchmark-results`](./benchmark-results/) directory.
 
-> [!CAUTION]
-> - Todo: Example performance data
+![Plot showing benchmark performance across 6 different GPU models](./benchmark-results/benchmark-flamegpu.svg)
+
+<!-- python3 scripts/plot.py -o benchmark-results/ --subplots --format svg -- benchmark-results/*.json -->
 
 ## License
 
