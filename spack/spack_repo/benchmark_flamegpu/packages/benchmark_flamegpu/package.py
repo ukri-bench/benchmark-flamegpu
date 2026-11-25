@@ -14,10 +14,10 @@ class BenchmarkFlamegpu(CMakePackage, CudaPackage, ROCmPackage):
     git = "https://github.com/ukri-bench/benchmark-flamegpu.git"
 
     license("AGPL-3.0-only")
+
     maintainers("ptheywood", "mondus", "robadob")
 
     version("main", tag="main", no_cache=True)
-    version("initial-benchmark-spack", tag="initial-benchmark-spack", no_cache=True, git="file:///home/ptheywood/code/flamegpu/benchmark-flamegpu",)
 
     variant(
         "seatbelts",
@@ -35,42 +35,22 @@ class BenchmarkFlamegpu(CMakePackage, CudaPackage, ROCmPackage):
         description="Share usage statistics ([telemetry](https://docs.flamegpu.com/guide/telemetry)) to support evidencing usage/impact of the software",
     )
 
-
-    depends_on("c", type="build")
-    depends_on("cxx", type="build")
-    
-    # Cmake >= 3.25.2 required
-    depends_on("cmake@3.25.2:4.3", type="build")
-
-
-    # Must have one of the CUDA or ROCm variant enabled (GPU only). Ideally this should always be explicit, but extending CudaPackage & ROCmPackage seems to ignore sticky=True
-    variant("cuda", default=False, sticky=True, description="Build with CUDA")
-    variant("rocm", default=False, sticky=True, description="Build with ROCm/HIP")
-    requires("+cuda", "+rocm", policy="one_of", msg="Must enable either +cuda or +rocm")
-    
-    # enforce cuda_arch must be set, for consisteny with ROCm spack. (this is not strictly required)
+    # Must have one of the +cuda or +rocm variant enabled (no CPU builds). Ideally this should always be explicit, but extending CudaPackage & ROCmPackage seems to ignore sticky=True
+    requires("+cuda", "+rocm", policy="one_of", msg="One of either +cuda or +rocm must be enabled")
+    # enforce cuda_arch must be set, for consisteny between +cuda and +rocm (although compiler defaults would produce valid binaries)
     conflicts("cuda_arch=none", when="+cuda", msg="CUDA architecture is required")
 
-    # CUDA >= 12.4 supported by FLAMEGPU 2 
-    depends_on("cuda@12.4:", when="+cuda")
-    
-    # HIP/ROCM >= 7.0 supported    
-    depends_on("hip@7.0:", when="+rocm")
-
-    # CUDA only dependencies
-    with when("+cuda"):
-        # nvml not a separate spack pacakge
-        pass
-
-    # ROCM only dependencies
-    with when("+rocm"):
-        depends_on("rocm-smi-lib") # for metadata collection
-
-    # benchmark-flamegpu dependencies regardless of build type
-    depends_on("nlohmann-json@3.11.3:")
-    depends_on("cli11@2.5:") # spack 1.2.2 only includes 2.5.0. We fetch 2.6.2 in cmake
+    # Direct dependencies of benchmark-flamegpu
+    depends_on("c", type="build")
+    depends_on("cxx", type="build")
+    depends_on("cmake@3.25.2:4.3", type="build")
     depends_on("git@1.6.6:", type="build") # techincally optional, but adds build metadata
-    
+
+    depends_on("nlohmann-json@3.11.3:")
+    depends_on("cli11@2.5:")
+    with when("+rocm"):
+        depends_on("rocm-smi-lib")
+    # Note: NVML is not a separate spack package
 
     # FLAMEGPU2 is not (yet) an independent spack package (it cannot be --installed), instead specify some transitive dependencies for now (excluding un-used/not relevant dependencies)
     # depends_on("flamegpu2", type="build")  # variants would need to match
@@ -83,9 +63,12 @@ class BenchmarkFlamegpu(CMakePackage, CudaPackage, ROCmPackage):
         destination="spack-resources",
         placement="flamegpu2",
     )
-
+    # CUDA >= 12.4 supported by FLAMEGPU 2.0.0-rc.6
+    depends_on("cuda@12.4:", when="+cuda")
+    # HIP/ROCM >= 7.0 supported by FLAMEGPU 2.0.0-rc.6
+    depends_on("hip@7.0:", when="+rocm")
     # Generic transivitve dependencies from flamegpu2
-    # depends_on("nlohmann-json@3.11.3:") # duplicated
+    # depends_on("nlohmann-json@3.11.3:") # duplicate, commented out until separated.
     depends_on("tinyxml2@9.0.0:")
     depends_on("git", type="build")
     # CUDA only transitive dependencies from flamegpu2
@@ -109,7 +92,6 @@ class BenchmarkFlamegpu(CMakePackage, CudaPackage, ROCmPackage):
         depends_on("hiprand")
         depends_on("rocprofiler-sdk", when="+profiling") # maybe rocprofiler-dev ?
 
-
     # Define where the root CMakeLists.txt is within the benchmark-flamegpu repository
     root_cmakelists_dir = "."
 
@@ -120,50 +102,42 @@ class BenchmarkFlamegpu(CMakePackage, CudaPackage, ROCmPackage):
             env.set("CXX", self.spec["hip"].hipcc)
 
     def cmake_args(self):
-        args = []
+        args = [
+            # Always forward the value for seatbelts, defaults to ON in CMake
+            self.define("FLAMEGPU_SEATBELTS", self.spec.variants["seatbelts"].value),
+            # Alwasy forward if profiling should be enabled value
+            self.define("FLAMEGPU_ENABLE_PROFILING", self.spec.variants["profiling"].value),
+            # Usage telemetry defautls to ON, so always specify a value (and suppress the notice)
+            self.define("FLAMEGPU_SHARE_USAGE_STATISTICS", self.spec.variants["telemetry"].value),
+            self.define("FLAMEGPU_TELEMETRY_SUPPRESS_NOTICE", "ON"),
+            # configure this cmake to explcitly use spack-provided transitive dependencies
+            self.define("USE_SPACK_FLAMEGPU2_DEPS", "ON"),
+            # Make fetch content not use the internet, to ensure offline builds work
+            self.define("FETCHCONTENT_FULLY_DISCONNECTED", True),
+        ]
 
-        # Enable ROCm and forward architectures
+        # Define ROCm only cmake arguments
         if self.spec.satisfies("+rocm"):
+            # Explicitly set amdclang++ as the hip compiler
+            args.append(self.define("CMAKE_HIP_COMPILER", os.path.join(self.spec["llvm-amdgpu"].prefix.bin, "amdclang++")))
             args.append(self.define("FLAMEGPU_BACKEND", "HIP"))
             args.append(
                 self.define("CMAKE_HIP_ARCHITECTURES", self.spec.variants["amdgpu_target"].value)
             )
-            # Explicitly set amdclang++ as the hip compiler
-            args.append(self.define("CMAKE_HIP_COMPILER", os.path.join(self.spec["llvm-amdgpu"].prefix.bin, "amdclang++")))
 
-        # Enable CUDA and forward architectures
+        # Define CUDA only cmake arguments
         if self.spec.satisfies("+cuda"):
             args.append(self.define("FLAMEGPU_BACKEND", "CUDA"))
             args.append(self.define("CMAKE_CUDA_ARCHITECTURES", self.spec.variants["cuda_arch"].value))
 
-        # Get CMake to use the spack resource FLAMEGPU2 rather than using fetch content via FLAMEGPU_ROOT
+        # Ensure the spack-defined resource for flamegpu2 is used (prior to it becoming a spack package itself)
         flamegpu_root = os.path.join(self.stage.source_path, "spack-resources", "flamegpu2")
         if os.path.exists(flamegpu_root):
             args.append(self.define("FLAMEGPU_ROOT", flamegpu_root))
-
-        # Use the spack-resource jitify2, if appropraite
+        # Use the spack-resource jitify2 (if appropraite)
         if self.spec.satisfies("+cuda"):
             jitify_root = os.path.join(self.stage.source_path, "spack-resources", "jitify")
             if os.path.exists(jitify_root):
                 args.append(self.define("FETCHCONTENT_SOURCE_DIR_JITIFY", jitify_root))
-
-        # Always forward the value for seatbelts, defaults to ON in CMake
-        args.append(self.define("FLAMEGPU_SEATBELTS", self.spec.variants["seatbelts"].value))
-
-        # Alwasy forward if profiling should be enabled value
-        args.append(self.define("FLAMEGPU_ENABLE_PROFILING", self.spec.variants["profiling"].value))
-
-        # Usage telemetry defautls to ON, so always specify a value (and suppress the notice)
-        args.append(self.define("FLAMEGPU_SHARE_USAGE_STATISTICS", self.spec.variants["telemetry"].value))
-        args.append(self.define("FLAMEGPU_TELEMETRY_SUPPRESS_NOTICE", "ON"))
-
-        # configure this cmake to explcitly use spack-provided transitive dependencies
-        args.append(self.define("USE_SPACK_FLAMEGPU2_DEPS", "ON"))
-
-        # Encourage CMake to find packages before fetching them, this might work...
-        # args.append(self.define("FETCHCONTENT_TRY_FIND_PACKAGE_MODE", "ALWAYS"))
-
-        # Make fetch content not use the internet, to ensure offline builds work
-        args.append(self.define("FETCHCONTENT_FULLY_DISCONNECTED", True))
 
         return args
