@@ -135,7 +135,6 @@ def plot(
 
     # Filter which benchmark models are to be plotted, using unitx-style (non-regex) patterns
     if benchmark_model_patterns is not None and len(benchmark_model_patterns) > 0:
-        print(benchmark_model_patterns)
         # if "*" is in the patterns at all, all will be returned, so only do any filtering if it is not.
         if "*" not in benchmark_model_patterns:
             # build a mask
