@@ -154,4 +154,7 @@ class BenchmarkFlamegpu(CMakePackage, CudaPackage, ROCmPackage):
         # Encourage CMake to find packages before fetching them, this might work...
         # args.append(self.define("FETCHCONTENT_TRY_FIND_PACKAGE_MODE", "ALWAYS"))
 
+        # Make fetch content not use the internet, to ensure offline builds work
+        args.append(self.define("FETCHCONTENT_FULLY_DISCONNECTED", True))
+
         return args
