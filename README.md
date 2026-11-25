@@ -159,7 +159,12 @@ cd build
 ./bin/Release/benchmark-flamegpu -o output.json
 ```
 
-<!-- Todo: example job submission scripts in separate files in the repo) -->
+`scripts/slurm/` includes example job submission scripts for several HPC systems, built manually using CMake. These are intended to be submit from the directory they are contained within.
+
+- [scripts/slurm/cosma8](scripts/slurm/cosma8/): Durham HPC Hardware Lab (MI300x)
+- [scripts/slurm/n8cir-bede](./scripts/slurm/n8cir-bede/): N8 CIR Bede (GH200)
+- [scripts/slurm/cosma8/](scripts/slurm/cosma8/): The University of Sheffield Stanage (A100 SXM4, H100 PCIe, H100 NVL)
+
 
 > [!CAUTION]
 > - Todo: Example of how to test correctness
