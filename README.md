@@ -71,10 +71,10 @@ spack info benchmark-flamegpu
 
 There are several variants available:
 
-- `+cuda` enable CUDA support, must also specify a value for `cuda_arch`
-- `+rocm` enable ROCm/HIP support, must also specify `amdgpu_target`
-- `+seatbelts` enable/disable additional runtime checks. Disable for benchmarking
-- `+telemetry` enable/disable FLAMEPGU usage telemetry. Disable for benchmarking
+- `cuda` enable CUDA support, must also specify a value for `cuda_arch`
+- `rocm` enable ROCm/HIP support, must also specify `amdgpu_target`
+- `seatbelts` enable/disable additional runtime checks, disabled by default.
+- `telemetry` enable/disable FLAMEPGU usage telemetry, disabled by default.
 
 Note: to use Spack, you must have Spack installed on the system you are using and
 a valid Spack system configuration. Example Spack configurations are available
