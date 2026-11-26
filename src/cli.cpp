@@ -8,7 +8,12 @@
 #include <CLI/App.hpp>
 #include <CLI/Formatter.hpp>
 #include <CLI/Config.hpp>
+// CLI11 2.5.0 does not have ExtraValidators.hpp, just Validators.hpp
+#if __has_include(<CLI/ExtraValidators.hpp>)
 #include <CLI/ExtraValidators.hpp>
+#else
+#include <CLI/Validators.hpp>
+#endif
 
 Arguments parse_cli(int argc, const char ** argv) {
     // Struct containing values to be returned
