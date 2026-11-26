@@ -15,6 +15,8 @@
  * Struct containing values which can be configured using the CLI
  */
 struct Arguments {
+    // If --version was requested
+    bool version = false;
     // The GPU index to use
     std::int32_t device = 0;
     // The number of times each simulation is repeated
