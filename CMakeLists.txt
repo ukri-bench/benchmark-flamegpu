@@ -42,39 +42,26 @@ endif()
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}/)
 
 # Dynamically generate a .cpp file which includes the git hash of this repository (if git is available)
-set(BENCHMARK_FLAMEGPU_GIT_DESCRIBE "UNKNOWN")
-find_package(Git)
-if(Git_FOUND)
-    # Ensure a configure happens if the git index is updated
-    set_property(
-        DIRECTORY 
-        APPEND 
-        PROPERTY CMAKE_CONFIGURE_DEPENDS 
-        "${CMAKE_CURRENT_SOURCE_DIR}/.git/index"
-    )
-    # call git describe
-    execute_process(
-        COMMAND
-            ${GIT_EXECUTABLE} describe --always --dirty
-        WORKING_DIRECTORY
-            ${CMAKE_CURRENT_SOURCE_DIR}
-        RESULT_VARIABLE
-            GIT_DESCRIBE_RESULT
-        OUTPUT_VARIABLE
-            GIT_DESCRIBE_OUTPUT
-        OUTPUT_STRIP_TRAILING_WHITESPACE)
-    # update the variable if successful, else it will still be unknown
-    if (GIT_DESCRIBE_RESULT EQUAL 0)
-        set(BENCHMARK_FLAMEGPU_GIT_DESCRIBE "${GIT_DESCRIBE_OUTPUT}")
-    endif()
-endif()
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/dynamic_metadata.cpp.in ${CMAKE_CURRENT_BINARY_DIR}/src/dynamic_metadata.cpp @ONLY)
+# Use a custom target so this behaves when only git has been changed.
+set(DYNAMIC_METADATA_IN "${CMAKE_CURRENT_SOURCE_DIR}/src/dynamic_metadata.cpp.in")
+set(DYNAMIC_METADATA_OUT "${CMAKE_CURRENT_BINARY_DIR}/src/dynamic_metadata.cpp")
+add_custom_target(${PROJECT_NAME}-metadata
+    ALL
+    COMMAND ${CMAKE_COMMAND}
+        -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+        -DINPUT_FILE=${DYNAMIC_METADATA_IN}
+        -DOUTPUT_FILE=${DYNAMIC_METADATA_OUT}
+        -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GenerateDynamicMetadataCXX.cmake"
+    BYPRODUCTS "${DYNAMIC_METADATA_OUT}"
+    COMMENT "Generating ${DYNAMIC_METADATA_OUT}"
+    VERBATIM
+)
 
 # List source files for the benchmark model
 SET(ALL_SRC
+    ${DYNAMIC_METADATA_OUT} # dynamicly generated
     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cu
     ${CMAKE_CURRENT_SOURCE_DIR}/src/metadata.h
-    ${CMAKE_CURRENT_BINARY_DIR}/src/dynamic_metadata.cpp # dynamicly generated
     ${CMAKE_CURRENT_SOURCE_DIR}/src/cli.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/cli.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/circles_spatial3D_fp32.h
@@ -85,6 +72,9 @@ SET(ALL_SRC
 
 # Define the binary target
 flamegpu_add_executable("${PROJECT_NAME}" "${ALL_SRC}" "${FLAMEGPU_ROOT}" "${PROJECT_BINARY_DIR}" OFF)
+
+# Ensure the dynamic metadata file generation is an explicit dependency
+add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}-metadata)
 
 # ensure include directories are updated
 target_include_directories("${PROJECT_NAME}" PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
