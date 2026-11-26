@@ -87,6 +87,12 @@ int main(int argc, const char ** argv) {
     // Setup/process CLI
     Arguments args = parse_cli(argc, argv);
 
+    // If --version was passed, print the version and exit.
+    if (args.version) {
+        printf("%s\n", metadata::get_git_describe().c_str());
+        return EXIT_SUCCESS;
+    }
+
     // Define a root json object
     nlohmann::json json_root;
 

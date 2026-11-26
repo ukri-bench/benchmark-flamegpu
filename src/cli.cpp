@@ -20,6 +20,7 @@ Arguments parse_cli(int argc, const char ** argv) {
     Arguments args = {};
     // Define the CLI using CLI11
     CLI::App app{"ukri-bench/benchmark-flamegpu"};
+    app.add_flag("--version", args.version, "Print the version of benchmark-flamegpu");
     app.add_option("-d,--device", args.device, "GPU Device ID (0 indexed)")->capture_default_str();
     app.add_option("-r,--repetitions", args.repetitions, "The number of times to repeat each simulation")->capture_default_str();
     app.add_option("-s,--steps", args.steps, "The number of steps for each simulation (> 0)")->check(CLI::PositiveNumber)->capture_default_str();
