@@ -9,6 +9,7 @@ FetchContent_Declare(
     GIT_SHALLOW    0
     GIT_PROGRESS   ON
     SYSTEM
+    FIND_PACKAGE_ARGS 2.5 NAMES cli11 CLI11 CONFIG # try finding >=2.5 for spack support before downloading
 )
 FetchContent_MakeAvailable(cli11)
 
