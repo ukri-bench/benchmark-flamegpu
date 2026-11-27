@@ -52,27 +52,47 @@ Alpha
 
 ## Building the benchmark
 
-The benchmark can currently only be built manually via CMake. 
+The benchmark can be built using Spack or manually. 
 
-<!-- The benchmark can be built using Spack or manually. If you are using the 
+<!-- If you are using the 
 ReFrame method to run the benchmark described below, it will automatically
-perform the build step for you.
+perform the build step for you. -->
 
-Once it has been built the benchmark executable is called `name-of-exe.x` -->
+Once it has been built the benchmark executable is called `benchmark-flamegpu`
 
-<!-- ### Spack build
+### Spack build
 
-A Spack package is provided in `spack/`:
+A Spack package is provided in the repository https://github.com/ukri-bench/spack-packages. To view the package options:
 
 ```bash
-spack repo add ./spack
-spack info <package name>
+spack repo add --name bench_pkgs https://github.com/ukri-bench/spack-packages.git bench_pkgs
+spack info benchmark-flamegpu
 ```
-- ADD: Describe Spack spec and variants available
+
+There are several variants available:
+
+- `cuda` enable CUDA support, must also specify a value for `cuda_arch`
+- `rocm` enable ROCm/HIP support, must also specify `amdgpu_target`
+- `seatbelts` enable/disable additional runtime checks, disabled by default.
+- `telemetry` enable/disable FLAMEPGU usage telemetry, disabled by default.
+
+One of either `+cuda` or `+rocm` must be specified.
 
 Note: to use Spack, you must have Spack installed on the system you are using and
 a valid Spack system configuration. Example Spack configurations are available
-in a separate repository: [https://github.com/ukri-bench/system-configs] -->
+in a separate repository: [https://github.com/ukri-bench/system-configs]
+
+E.g. For Nvidia GPUs (with Ampere GPUs as the example `cuda_arch`):
+
+```bash
+spack install benchmark-flamegpu +cuda cuda_arch=80
+```
+
+Or for AMD GPUs (with Mi350x as the example `amdgpu_target`):
+
+```bash
+spack install benchmark-flamegpu +rocm amdgpu_target=gfx942
+```
 
 ### Manual build
 
@@ -147,7 +167,10 @@ in a separate repository: [https://github.com/ukri-bench/system-configs] -->
 
 ### Running manually
 
-A single binary will have been produced within the CMake build directory. For a `Release` build with `build` this would be `build/bin/Release/benchmark-flamegpu`. 
+A single binary `benchmark-flamegpu` will have been produced either:
+
+- Within the CMake build directory, e.g. `build/bin/Release/benchmark-flamegpu` for a `Release` build in the  `build` directory
+- Installed via spack into the current spack environment
 
 When executed, by default the full set of benchmarks are executed and benchmark data is written to `benchmark-flamegpu.json` in the current working directory (as well as being printed to stdout).
 `-o/--output` can be used to write specify an alternate destination for the JSON file output.
@@ -155,8 +178,9 @@ When executed, by default the full set of benchmarks are executed and benchmark 
 Use `-h`/`--help` to see a full list of command line arguments.
 
 ```bash
-cd build
-./bin/Release/benchmark-flamegpu -o output.json
+./build/bin/Release/benchmark-flamegpu -o output.json
+# or for spack
+benchmark-flamegpu -o output.json
 ```
 
 `scripts/slurm/` includes example job submission scripts for several HPC systems, built manually using CMake. These are intended to be submit from the directory they are contained within.
