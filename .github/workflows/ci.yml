@@ -1,0 +1,82 @@
+name: Build benchmark-flamegpu
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    name: Build (CMake, ${{ matrix.gpu_backend }})
+    runs-on: ubuntu-26.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - gpu_backend: cuda
+            cmake_opt: >
+              -DCMAKE_BUILD_TYPE=Release
+              -DFLAMEGPU_SEATBELTS=OFF
+              -DFLAMEGPU_BACKEND=CUDA
+              -DCMAKE_CUDA_ARCHITECTURES=80
+          - gpu_backend: rocm
+            cmake_opt: >
+              -DCMAKE_BUILD_TYPE=Release
+              -DFLAMEGPU_SEATBELTS=OFF
+              -DFLAMEGPU_BACKEND=HIP
+              -DCMAKE_HIP_ARCHITECTURES=gfx942
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install dependencies (default apt)
+        run: |
+          sudo apt-get -y update
+          sudo apt-get install -y wget git cmake python3-setuptools python3-wheel libatomic1 libquadmath0
+
+      - name: Install CUDA 13.3 (required subpackages only)
+        if: matrix.gpu_backend == 'cuda'
+        run: |
+          wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2604/x86_64/cuda-keyring_1.1-1_all.deb
+          sudo dpkg -i cuda-keyring_1.1-1_all.deb
+          sudo apt-get -y update
+          sudo apt-get install -y --no-install-recommends cuda-compiler-13-3 cuda-cudart-dev-13-3 cuda-nvtx-13-3 cuda-nvrtc-dev-13-3 libcurand-dev-13-3 cuda-cccl-13-3 libnvjitlink-dev-13-3 cuda-nvml-dev-13-3
+          echo "CUDA_PATH=/usr/local/cuda-13.3" >> $GITHUB_ENV
+          echo "/usr/local/cuda-13.3/bin" >> $GITHUB_PATH
+          echo "LD_LIBRARY_PATH=/usr/local/cuda-13.3/lib64${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> $GITHUB_ENV
+
+      - name: Install ROCm/HIP 7.14 (required subpackages only)
+        if: matrix.gpu_backend == 'rocm'
+        run: |
+          sudo mkdir -p /etc/apt/keyrings
+          wget -qO - https://repo.amd.com/rocm/packages-multi-arch/gpg/rocm.gpg | gpg --dearmor | sudo tee /etc/apt/keyrings/amdrocm.gpg > /dev/null
+          sudo tee /etc/apt/sources.list.d/rocm.list << EOF
+          deb [arch=amd64 signed-by=/etc/apt/keyrings/amdrocm.gpg] https://repo.amd.com/rocm/packages-multi-arch/ubuntu2604 stable main
+          EOF
+          sudo apt-get -y update
+          sudo apt-get install -y libdrm-dev amdrocm-sysdeps7.14 amdrocm-base7.14 amdrocm-llvm7.14  amdrocm-rand-dev7.14 amdrocm-rand-host7.14 amdrocm-runtime-dev7.14 amdrocm-amdsmi7.14 amdrocm-ccl-dev7.14
+          echo "ROCM_PATH=/opt/rocm/core-7.14" >> $GITHUB_ENV
+          echo "/opt/rocm/core-7.14/bin" >> $GITHUB_PATH
+          echo "/opt/rocm/core-7.14/llvm/bin" >> $GITHUB_PATH
+          echo "LD_LIBRARY_PATH=/opt/rocm/core-7.14/lib:/opt/rocm/core-7.14/llvm/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> $GITHUB_ENV
+          echo "CC=hipcc" >> $GITHUB_ENV
+          echo "CXX=hipcc" >> $GITHUB_ENV
+
+      - name: Configure CMake
+        run: cmake -B build -S . ${{ matrix.cmake_opt }} 
+
+      - name: Build benchmark-flamegpu
+        run: cmake --build build --target all --parallel "$(nproc)"
